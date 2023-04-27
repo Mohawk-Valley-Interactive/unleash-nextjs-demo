@@ -1,6 +1,5 @@
-import Image from 'next/image';
+import Link from 'next/link';
 import { Inter } from '@next/font/google';
-import styles from './page.module.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -10,12 +9,12 @@ export default function Home() {
       <div className="max-w-screen-2xl m-auto bg-white text-black">
         {/* NAVBAR */}
         <nav className="bg-white p-2 flex justify-between">
-          <a
+          <Link
             href=""
             className="font-bold text-gray-700 text-2xl"
           >
             OpenTable
-          </a>
+          </Link>
           <div>
             <div className="flex">
               <button className="bg-blue-400 text-white border p-1 px-4 rounded mr-3">
@@ -49,24 +48,26 @@ export default function Home() {
           <div className="py-3 px-36 mt-10 flex flex-wrap">
             {/* CARD */}
             <div className="w-64 h-72 m-3 rounded overflow-hidden border cursor-pointer">
-              <img
-                src="https://resizer.otstatic.com/v2/photos/wide-huge/3/42584321.jpg"
-                alt=""
-                className="w-full h-36"
-              />
-              <div className="p-1">
-                <h3 className="font-bold text-2xl mb-2">Mike's Place</h3>
-                <div className="flex items-start">
-                  <div className="flex mb-2">*****</div>
-                  <p className="ml-2">77 reviews</p>
+              <Link href="/restaurant/mikes-place">
+                <img
+                  src="https://resizer.otstatic.com/v2/photos/wide-huge/3/42584321.jpg"
+                  alt=""
+                  className="w-full h-36"
+                />
+                <div className="p-1">
+                  <h3 className="font-bold text-2xl mb-2">Mike's Place</h3>
+                  <div className="flex items-start">
+                    <div className="flex mb-2">*****</div>
+                    <p className="ml-2">77 reviews</p>
+                  </div>
+                  <div className="flex text-reg font-light capitalize">
+                    <p className="mr-3">Cuban</p>
+                    <p className="mr-3">$$$$</p>
+                    <p>Little Falls</p>
+                  </div>
+                  <p className="text-sm mt-1 font-bold">Booked 5 times today</p>
                 </div>
-                <div className="flex text-reg font-light capitalize">
-                  <p className="mr-3">Cuban</p>
-                  <p className="mr-3">$$$$</p>
-                  <p>Little Falls</p>
-                </div>
-                <p className="text-sm mt-1 font-bold">Booked 5 times today</p>
-              </div>
+              </Link>
             </div>
             {/* CARD */}
           </div>
