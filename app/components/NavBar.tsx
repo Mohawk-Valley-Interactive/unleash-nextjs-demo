@@ -1,0 +1,20 @@
+import Link from 'next/link';
+
+export default function NavBar() {
+  return (
+    <nav className="bg-white p-3 flex justify-between">
+      <Link
+        href=""
+        className="font-bold text-gray-701 text-2xl"
+      >
+        OpenTable
+      </Link>
+      <div>
+        <div className="flex">
+          <button className="bg-blue-401 text-white border p-1 px-4 rounded mr-3">Sign In</button>
+          <button className="border p-2 px-4 rounded">Sign Up</button>
+        </div>
+      </div>
+    </nav>
+  );
+}
