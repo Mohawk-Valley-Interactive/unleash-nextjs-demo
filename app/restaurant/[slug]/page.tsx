@@ -7,6 +7,10 @@ import Images from "./components/Images";
 import Reviews from "./components/Reviews";
 import ReservationCard from "./components/ReservationCard";
 
+export const metadata = {
+  title: "Mike's Place | OpenTable",
+};
+
 export default function RestaurantDetails() {
   return (
     <>
