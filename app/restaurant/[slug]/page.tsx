@@ -10,18 +10,15 @@ import ReservationCard from "./components/ReservationCard";
 export default function RestaurantDetails() {
   return (
     <>
-      <Header />
-      <div className="flex m-auto w-2/3 justify-between items-start 0 -mt-11">
-        <div className="bg-white w-[70%] rounded p-3 shadow">
-          <RestaurantNavBar />
-          <Title />
-          <Rating />
-          <Description />
-          <Images />
-          <Reviews />
-        </div>
-        <ReservationCard />
+      <div className="bg-white w-[70%] rounded p-3 shadow">
+        <RestaurantNavBar />
+        <Title />
+        <Rating />
+        <Description />
+        <Images />
+        <Reviews />
       </div>
+      <ReservationCard />
     </>
   );
 }
