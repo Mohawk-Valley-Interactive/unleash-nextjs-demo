@@ -1,19 +1,17 @@
-import NavBar from './components/NavBar';
-import Header from './components/Header';
-import RestaurantCard from './components/RestaurantCard';
+import Header from "./components/Header";
+import RestaurantCard from "./components/RestaurantCard";
+
+export const metadata = {
+  title: "OpenTable",
+};
 
 export default function Home() {
   return (
-    <div className="bg-gray-100 min-h-screen w-screen">
-      <div className="max-w-screen-2xl m-auto bg-white text-black">
-        <NavBar />
-        <main>
-          <Header />
-          <div className="py-3 px-36 mt-10 flex flex-wrap">
-            <RestaurantCard />
-          </div>
-        </main>
+    <main>
+      <Header />
+      <div className="py-3 px-36 mt-10 flex flex-wrap">
+        <RestaurantCard />
       </div>
-    </div>
+    </main>
   );
 }
