@@ -19,7 +19,7 @@ model Restaurant {
   close_time  String
   main_image  String
   images      String[]
-  price       Price
+  price       PRICE
   items       Item[]
   cuisine_id  Int
   cuisine     Cuisine  @relation(fields: [cuisine_id], references: [id])
@@ -56,8 +56,8 @@ model Location {
   restaurants Restaurant[]
 }
 
-enum Price {
-  cheap
-  regular
-  expensive
+enum PRICE {
+  CHEAP
+  REGULAR
+  EXPENSIVE
 }
