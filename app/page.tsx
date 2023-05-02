@@ -10,6 +10,7 @@ async function fetchRestaurants(): Promise<RestaurantCardType[]> {
   const restaurants = await prismaClient.restaurant.findMany({
     select: {
       id: true,
+      slug: true,
       name: true,
       main_image: true,
       cuisine: true,
