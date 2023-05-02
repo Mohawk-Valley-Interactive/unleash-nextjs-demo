@@ -1,16 +1,20 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-export default function RestaurantNavBar() {
+interface Props {
+  slug: string;
+}
+
+export default function RestaurantNavBar({ slug }: Props) {
   return (
     <nav className="flex text-reg border-b pb-2">
       <Link
-        href="/restaurant/mikes-place"
+        href={`/restaurant/${slug}`}
         className="mr-7"
       >
         Overview
       </Link>
       <Link
-        href="/restaurant/mikes-place/menu"
+        href={`/restaurant/${slug}/menu`}
         className="mr-7"
       >
         Menu

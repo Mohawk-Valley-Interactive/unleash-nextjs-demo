@@ -3,9 +3,8 @@ import RestaurantCard, {
   RestaurantCardType,
 } from "./components/RestaurantCard";
 
-import { PrismaClient } from "@prisma/client";
+import { default as prismaClient } from "@/lib/prismaClient";
 
-const prismaClient = new PrismaClient();
 async function fetchRestaurants(): Promise<RestaurantCardType[]> {
   const restaurants = await prismaClient.restaurant.findMany({
     select: {
