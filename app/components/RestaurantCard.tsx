@@ -1,6 +1,20 @@
-import Link from 'next/link';
+import { Cuisine, Location, PRICE } from "@prisma/client";
+import Link from "next/link";
 
-export default function RestaurantCard() {
+export interface RestaurantCardType {
+  id: number;
+  name: string;
+  main_image: string;
+  cuisine: Cuisine;
+  location: Location;
+  price: PRICE;
+}
+
+interface Props {
+  restaurant: RestaurantCardType;
+}
+
+export default function RestaurantCard({ restaurant }: Props) {
   return (
     <div className="w-65 h-72 m-3 rounded overflow-hidden border cursor-pointer">
       <Link href="/restaurant/mikes-place">
