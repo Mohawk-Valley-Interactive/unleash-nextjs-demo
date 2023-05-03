@@ -4,12 +4,28 @@ import RestaurantCard, {
   RestaurantCardType,
 } from "./components/RestaurantCard";
 import { default as prismaClient } from "@/lib/prismaClient";
-import { Cuisine, Location, PRICE } from "@prisma/client";
+import { PRICE } from "@prisma/client";
 
-function fetchRestaurantsByLocation(
-  locationName: string
-): Promise<RestaurantCardType[]> {
-  const selectQuery = {
+async function fetchCuisines() {
+  return prismaClient.cuisine.findMany();
+}
+
+async function fetchLocations() {
+  return prismaClient.location.findMany();
+}
+
+interface SearchParams {
+  cuisine?: string;
+  city?: string;
+  price?: PRICE;
+}
+
+async function fetchRestaurants({
+  cuisine,
+  city,
+  price,
+}: SearchParams): Promise<RestaurantCardType[]> {
+  const select = {
     id: true,
     slug: true,
     name: true,
@@ -18,20 +34,34 @@ function fetchRestaurantsByLocation(
     location: true,
     price: true,
   };
-  if (!locationName)
-    return prismaClient.restaurant.findMany({
-      select: selectQuery,
-    });
+
+  const where: any = {};
+
+  if (cuisine) {
+    where.cuisine = {
+      name: {
+        equals: cuisine.toLowerCase(),
+      },
+    };
+  }
+
+  if (city) {
+    where.location = {
+      name: {
+        equals: city.toLowerCase(),
+      },
+    };
+  }
+
+  if (price) {
+    where.price = {
+      equals: price,
+    };
+  }
 
   return prismaClient.restaurant.findMany({
-    where: {
-      location: {
-        name: {
-          equals: locationName.toLowerCase(),
-        },
-      },
-    },
-    select: selectQuery,
+    where,
+    select,
   });
 }
 
@@ -41,20 +71,26 @@ export const metadata = {
 
 interface Props {
   searchParams: {
-    city: string;
+    city?: string;
+    cuisine?: string;
+    price?: PRICE;
   };
 }
 
 export default async function Search({ searchParams }: Props) {
-  const restaurantLocations = await fetchRestaurantsByLocation(
-    searchParams.city
-  );
+  const cuisines = await fetchCuisines();
+  const locations = await fetchLocations();
+  const restaurantLocations = await fetchRestaurants(searchParams);
 
   return (
     <>
       <Header />
       <div className="flex py-4 m-auto w-2/3 justify-between items-start">
-        <SearchSideBar />
+        <SearchSideBar
+          cuisines={cuisines}
+          locations={locations}
+          searchParams={searchParams}
+        />
         <div className="w-5/6">
           {restaurantLocations.length <= 0 ? (
             <span>No restaurants found in {searchParams.city}</span>
