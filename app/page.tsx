@@ -4,6 +4,8 @@ import Header from "./components/Header";
 import RestaurantCard, {
   RestaurantCardType,
 } from "./components/RestaurantCard";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 async function fetchRestaurants(): Promise<RestaurantCardType[]> {
   const restaurants = await prismaClient.restaurant.findMany({
@@ -30,16 +32,18 @@ export default async function Home() {
   const restaurants = await fetchRestaurants();
 
   return (
-    <main>
-      <Header />
-      <div className="py-3 px-36 mt-10 flex flex-wrap">
-        {restaurants.map((restaurant) => (
-          <RestaurantCard
-            key={restaurant.id}
-            restaurant={restaurant}
-          />
-        ))}
+    <Suspense fallback={<Loading />}>
+      <div>
+        <Header />
+        <main className="py-3 px-36 mt-10 flex flex-wrap">
+          {restaurants.map((restaurant) => (
+            <RestaurantCard
+              key={restaurant.id}
+              restaurant={restaurant}
+            />
+          ))}
+        </main>
       </div>
-    </main>
+    </Suspense>
   );
 }
