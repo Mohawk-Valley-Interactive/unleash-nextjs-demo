@@ -1,4 +1,3 @@
-import Header from "./components/Header";
 import RestaurantNavBar from "./components/RestaurantNavBar";
 import Title from "./components/Title";
 import Rating from "./components/Rating";
@@ -8,6 +7,7 @@ import Reviews from "./components/Reviews";
 import ReservationCard from "./components/ReservationCard";
 import { default as prismaClient } from "@/lib/prismaClient";
 import { Location, Review } from "@prisma/client";
+import { notFound } from "next/navigation";
 
 interface Restaurant {
   id: number;
@@ -27,7 +27,7 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
   });
 
   if (!restaurant) {
-    throw new Error();
+    notFound();
   }
 
   return restaurant.name;
@@ -47,7 +47,7 @@ async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
   });
 
   if (!restaurant) {
-    throw new Error();
+    notFound();
   }
 
   return restaurant;
@@ -60,7 +60,8 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const name = await fetchRestaurantNameBySlug(params.slug);
+  //const name = await fetchRestaurantNameBySlug(params.slug);
+  const name = "test";
 
   return {
     title: `${name} | OpenTable`,
