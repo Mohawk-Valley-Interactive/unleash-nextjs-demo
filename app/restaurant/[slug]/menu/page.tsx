@@ -1,16 +1,61 @@
-import Header from "../components/Header";
+import { default as prismaClient } from "@/lib/prismaClient";
 import RestaurantNavBar from "../components/RestaurantNavBar";
 import Menu from "./components/Menu";
+import { Item } from "@prisma/client";
 
-export const metadata = {
-  title: "Mike's Place Menu | OpenTable",
-};
+async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
+  const restaurant = await prismaClient.restaurant.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
 
-export default function RestaurantMenu() {
+  if (!restaurant) {
+    throw new Error();
+  }
+
+  return restaurant.name;
+}
+
+async function fetchRestaurantMenuBySlug(slug: string): Promise<Item[]> {
+  const restaurant = await prismaClient.restaurant.findUnique({
+    where: {
+      slug,
+    },
+    select: {
+      items: true,
+    },
+  });
+
+  if (!restaurant) {
+    throw new Error();
+  }
+
+  return restaurant.items;
+}
+
+interface Props {
+  params: {
+    slug: string;
+  };
+}
+
+export async function generateMetadata({ params }: Props) {
+  const name = await fetchRestaurantNameBySlug(params.slug);
+
+  return {
+    title: `${name} Menu | OpenTable`,
+  };
+}
+
+export default async function RestaurantMenu({ params }: Props) {
+  const menuItems = await fetchRestaurantMenuBySlug(params.slug);
   return (
     <div className="bg-white w-[100%] rounded p-3 shadow">
-      <RestaurantNavBar />
-      <Menu />
+      <RestaurantNavBar slug={params.slug} />
+      <Menu menu={menuItems} />
     </div>
   );
 }

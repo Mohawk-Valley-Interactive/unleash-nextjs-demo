@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String
+  open_time   String
+  close_time  String
+  main_image  String
+  images      String[]
+  price       PRICE
+  items       Item[]
+  cuisine_id  Int
+  cuisine     Cuisine  @relation(fields: [cuisine_id], references: [id])
+  location_id Int
+  location    Location @relation(fields: [location_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Item {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String
+  price         String
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  restaurant_id Int
+  restarant     Restaurant @relation(fields: [restaurant_id], references: [id])
+}
+
+model Cuisine {
+  id          Int          @id @default(autoincrement())
+  name        String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  restaurants Restaurant[]
+}
+
+model Location {
+  id          Int          @id @default(autoincrement())
+  name        String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  restaurants Restaurant[]
+}
+
+enum PRICE {
+  CHEAP
+  REGULAR
+  EXPENSIVE
+}
