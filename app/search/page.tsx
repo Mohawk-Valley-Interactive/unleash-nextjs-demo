@@ -33,6 +33,7 @@ async function fetchRestaurants({
     cuisine: true,
     location: true,
     price: true,
+    reviews: true,
   };
 
   const where: any = {};

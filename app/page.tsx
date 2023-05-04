@@ -15,6 +15,7 @@ async function fetchRestaurants(): Promise<RestaurantCardType[]> {
       cuisine: true,
       location: true,
       price: true,
+      reviews: true,
     },
   });
 

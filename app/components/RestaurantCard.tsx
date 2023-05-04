@@ -1,6 +1,7 @@
-import { Cuisine, Location, PRICE } from "@prisma/client";
+import { Cuisine, Location, PRICE, Review } from "@prisma/client";
 import Link from "next/link";
 import Price from "./Price";
+import Stars from "./Stars";
 
 export interface RestaurantCardType {
   id: number;
@@ -10,6 +11,7 @@ export interface RestaurantCardType {
   cuisine: Cuisine;
   location: Location;
   price: PRICE;
+  reviews: Review[];
 }
 
 interface Props {
@@ -17,6 +19,12 @@ interface Props {
 }
 
 export default function RestaurantCard({ restaurant }: Props) {
+  let reviewCount = restaurant.reviews?.length ?? 0;
+  let reviewMessage = `${reviewCount} review`;
+  if (reviewCount != 1) {
+    reviewMessage = `${reviewMessage}s`;
+  }
+
   return (
     <div className="w-65 h-72 m-3 rounded overflow-hidden border cursor-pointer">
       <Link href={`/restaurant/${restaurant.slug}`}>
@@ -28,8 +36,8 @@ export default function RestaurantCard({ restaurant }: Props) {
         <div className="p-2">
           <h2 className="font-bold text-2xl mb-2">{restaurant.name}</h2>
           <div className="flex items-start">
-            <div className="flex mb-3">*****</div>
-            <p className="ml-3">77 reviews</p>
+            <Stars reviews={restaurant.reviews} />
+            <p className="ml-3">{reviewMessage}</p>
           </div>
           <div className="flex text-reg font-light capitalize">
             <p className="mr-4">{restaurant.cuisine.name}</p>
