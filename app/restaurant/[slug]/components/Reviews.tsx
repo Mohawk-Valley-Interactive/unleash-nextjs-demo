@@ -16,7 +16,10 @@ export default function Reviews({ reviews }: Props) {
           </h1>
           <div>
             {reviews.map((review) => (
-              <ReviewCard review={review} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+              />
             ))}
           </div>
         </div>
