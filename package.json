@@ -13,14 +13,18 @@
     "@emotion/styled": "^11.10.8",
     "@mui/material": "^5.12.3",
     "@prisma/client": "^4.8.1",
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "18.15.11",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
-    "next": "^13.4.0",
+    "@types/validator": "^13.7.15",
+    "bcrypt": "^5.1.0",
+    "next": "^13.4.1",
     "prisma": "^4.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
