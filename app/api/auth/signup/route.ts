@@ -54,7 +54,9 @@ export async function POST(req: NextRequest) {
       errorMessage: "City name must be between 1 and 20 characters in length.",
     },
     {
-      valid: validator.isStrongPassword(password),
+      valid: validator.isLength(password, {
+        min: 1,
+      }),
       errorMessage: "Password is not strong.",
     },
   ];
@@ -84,11 +86,10 @@ export async function POST(req: NextRequest) {
 
   const alg = "HS256";
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
   const token = await new jose.SignJWT({ email: user.email })
     .setProtectedHeader({ alg })
     .setExpirationTime("24h")
     .sign(secret);
 
-  return NextResponse.json({ hello: token }, { status: 200 });
+  return NextResponse.json({ token: token }, { status: 200 });
 }
