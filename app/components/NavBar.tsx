@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AuthButton from "./AuthButton";
 
 export default function NavBar() {
   return (
@@ -10,11 +11,9 @@ export default function NavBar() {
         OpenTable
       </Link>
       <div>
-        <div className="flex">
-          <button className="bg-blue-400 text-white border p-1 px-4 rounded mr-3">
-            Sign In
-          </button>
-          <button className="border p-2 px-4 rounded">Sign Up</button>
+        <div className="flex mr-6">
+          <AuthButton isSignIn={true} />
+          <AuthButton isSignIn={false} />
         </div>
       </div>
     </nav>
