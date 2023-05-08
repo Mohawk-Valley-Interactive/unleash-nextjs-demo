@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import AuthModalInputs from "./AuthModalInputs";
@@ -42,6 +42,29 @@ export default function AuthButton({ isSignIn }: Props) {
     city: "",
     password: "",
   });
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    if (isSignIn) {
+      if (inputs.password && inputs.email) {
+        return setDisabled(false);
+      }
+    } else {
+      // is sign-up form
+      if (
+        inputs.firstName &&
+        inputs.lastName &&
+        inputs.email &&
+        inputs.phone &&
+        inputs.city &&
+        inputs.password
+      ) {
+        return setDisabled(false);
+      }
+    }
+
+    setDisabled(true);
+  }, [inputs]);
 
   const authButton = useMemo(() => {
     return isSignIn ? (
@@ -104,7 +127,10 @@ export default function AuthButton({ isSignIn }: Props) {
               inputs={inputs}
               handleInputChange={handleInputChange}
             />
-            <button className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400">
+            <button
+              className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
+              disabled={disabled}
+            >
               {buttonText}
             </button>
           </div>
