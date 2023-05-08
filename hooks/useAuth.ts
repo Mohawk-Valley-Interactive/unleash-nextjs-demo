@@ -14,6 +14,7 @@ export interface SignUpParams {
   lastName: string;
   city: string;
   phone: string;
+  onSuccess: () => void;
 }
 
 export default function useAuth() {
@@ -57,7 +58,41 @@ export default function useAuth() {
     lastName,
     city,
     phone,
-  }: SignUpParams) => {};
+    onSuccess,
+  }: SignUpParams) => {
+    try {
+      setAuthState({
+        data: null,
+        error: null,
+        loading: true,
+      });
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signup",
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          city,
+          phone,
+        }
+      );
+
+      setAuthState({
+        data: response.data,
+        error: null,
+        loading: false,
+      });
+
+      onSuccess();
+    } catch (error: any) {
+      setAuthState({
+        data: null,
+        error: error.response.data.errorMessage,
+        loading: false,
+      });
+    }
+  };
 
   return { signIn, signUp };
 }

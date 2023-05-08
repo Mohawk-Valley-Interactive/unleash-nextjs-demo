@@ -112,6 +112,11 @@ export default function AuthButton({ isSignIn }: Props) {
         password: inputs.password,
         onSuccess: handleClose,
       });
+    } else {
+      signUp({
+        ...inputs,
+        onSuccess: handleClose,
+      });
     }
   };
 
