@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthState } from "../app/context/AuthorizationProvider";
+import { getCookie, deleteCookie } from "cookies-next";
 
 export interface SignInParams {
   email: string;
@@ -22,10 +23,11 @@ export default function useAuth() {
 
   const signIn = async ({ email, password, onSuccess }: SignInParams) => {
     try {
-      setAuthState({
-        data: null,
-        error: null,
-        loading: true,
+      setAuthState((prev) => {
+        return {
+          ...prev,
+          loading: true,
+        };
       });
       const response = await axios.post(
         "http://localhost:3000/api/auth/signin",
@@ -35,6 +37,10 @@ export default function useAuth() {
         }
       );
 
+      const jwt = getCookie("jwt");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+
+      console.log(`signIn ${response.data}`);
       setAuthState({
         data: response.data,
         error: null,
@@ -43,6 +49,7 @@ export default function useAuth() {
 
       onSuccess();
     } catch (error: any) {
+      console.log(`signIn error ${error.response.data.errorMessage}`);
       setAuthState({
         data: null,
         error: error.response.data.errorMessage,
@@ -61,10 +68,11 @@ export default function useAuth() {
     onSuccess,
   }: SignUpParams) => {
     try {
-      setAuthState({
-        data: null,
-        error: null,
-        loading: true,
+      setAuthState((prev) => {
+        return {
+          ...prev,
+          loading: true,
+        };
       });
       const response = await axios.post(
         "http://localhost:3000/api/auth/signup",
@@ -94,5 +102,74 @@ export default function useAuth() {
     }
   };
 
-  return { signIn, signUp };
+  const fetchUser = async () => {
+    setAuthState((prev) => {
+      return {
+        ...prev,
+        loading: true,
+      };
+    });
+    try {
+      const jwt = getCookie("jwt");
+
+      if (!jwt) {
+        setAuthState({
+          data: null,
+          error: null,
+          loading: false,
+        });
+
+        return;
+      }
+
+      const response = await axios.get("http://localhost:3000/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+
+      setAuthState({
+        data: response.data,
+        error: null,
+        loading: false,
+      });
+    } catch (error: any) {
+      setAuthState({
+        data: null,
+        error: error.response.data.errorMessage,
+        loading: false,
+      });
+    }
+  };
+
+  const signOut = async () => {
+    setAuthState((prev) => {
+      return {
+        ...prev,
+        loading: true,
+      };
+    });
+
+    // todo: someday, we might actually cache creds so calling the service
+    //       will be helpful
+    const response = await axios.post("http://localhost:3000/api/auth/signout");
+
+    const jwt = getCookie("jwt");
+    if (jwt) {
+      deleteCookie("jwt");
+    }
+    axios.defaults.headers.common["Authorization"];
+
+    setAuthState((prev) => {
+      return {
+        ...prev,
+        data: null,
+        loading: false,
+      };
+    });
+  };
+
+  return { fetchUser, signIn, signUp, signOut };
 }

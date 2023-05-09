@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import * as jose from "jose";
 
 export async function middleware(req: NextRequest, res: NextResponse) {
-  if (req.nextUrl.pathname.startsWith("/api/auth/me")) {
+  if (req.nextUrl.pathname.startsWith("/api/users/me")) {
     return authTokenVerification(req, res);
   }
 }

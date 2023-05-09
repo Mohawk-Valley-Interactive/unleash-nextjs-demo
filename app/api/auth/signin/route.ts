@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
     phone: user.phone,
     city: user.city,
   });
+
   res.cookies.set({
     name: "jwt",
     value: token,

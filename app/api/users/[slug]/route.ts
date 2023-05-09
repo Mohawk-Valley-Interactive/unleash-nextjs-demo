@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismaClient";
 
-export async function POST(req: NextRequest) {
+interface Params {
+  params: {
+    slug: string;
+  };
+}
+
+export async function GET(req: NextRequest, { params }: Params) {
   // email acquired from token and injected via authentication middleware
   const email: string = req.headers.get("email") as string;
 
   const user = await prisma.user.findUnique({
     where: { email },
     select: {
+      id: true,
       first_name: true,
       last_name: true,
       city: true,
@@ -23,5 +30,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ user });
+  return NextResponse.json({ ...user });
 }

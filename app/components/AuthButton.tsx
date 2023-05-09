@@ -34,7 +34,7 @@ interface Props {
  *        handled.
  */
 export default function AuthButton({ isSignIn }: Props) {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signOut } = useAuth();
   const { loading, data, error } = useAuthState();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -74,7 +74,7 @@ export default function AuthButton({ isSignIn }: Props) {
 
   const modalTitle = useMemo(() => {
     return isSignIn ? (data ? "Sign Out" : "Sign In") : "Create Account";
-  }, [isSignIn]);
+  }, [isSignIn, data]);
   const buttonText = modalTitle;
   const authButton = useMemo(() => {
     return isSignIn ? (
@@ -92,7 +92,7 @@ export default function AuthButton({ isSignIn }: Props) {
         Sign Up
       </button>
     );
-  }, [isSignIn]);
+  }, [isSignIn, data]);
 
   const modalInstructions = useMemo(() => {
     return isSignIn ? "Log Into Your Account" : "Create Your OpenTable Account";
@@ -107,11 +107,15 @@ export default function AuthButton({ isSignIn }: Props) {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isSignIn) {
-      signIn({
-        email: inputs.email,
-        password: inputs.password,
-        onSuccess: handleClose,
-      });
+      if (data) {
+        signOut();
+      } else {
+        signIn({
+          email: inputs.email,
+          password: inputs.password,
+          onSuccess: handleClose,
+        });
+      }
     } else {
       signUp({
         ...inputs,
@@ -152,17 +156,21 @@ export default function AuthButton({ isSignIn }: Props) {
                 </div>
               </div>
               <div className="m-auto text-black">
-                <h2 className="text-2xl font-light text-center">
-                  {modalInstructions}
-                </h2>
-                <AuthModalInputs
-                  isSignIn={isSignIn}
-                  inputs={inputs}
-                  handleInputChange={handleInputChange}
-                />
+                {data ? null : (
+                  <>
+                    <h2 className="text-2xl font-light text-center">
+                      {modalInstructions}
+                    </h2>
+                    <AuthModalInputs
+                      isSignIn={isSignIn}
+                      inputs={inputs}
+                      handleInputChange={handleInputChange}
+                    />
+                  </>
+                )}
                 <button
                   className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
-                  disabled={disabled}
+                  disabled={data === null && disabled}
                   onClick={handleClick}
                 >
                   {buttonText}
