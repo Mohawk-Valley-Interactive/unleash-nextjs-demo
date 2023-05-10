@@ -1,6 +1,42 @@
 "use client";
 
-export default function ReservationCard() {
+import { useState } from "react";
+import { partySize, times } from "../../../../data";
+import DatePicker from "react-datepicker";
+import { time } from "console";
+
+interface Props {
+  openTime: string;
+  closeTime: string;
+}
+
+export default function ReservationCard({ openTime, closeTime }: Props) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
+  function handleChangeDate(date: Date | null) {
+    return setSelectedDate(date);
+  }
+
+  function filterTimeByRestaurantHours() {
+    const availableTimes: typeof times = [];
+    let isInTimeWindow = false;
+    times.forEach((t) => {
+      if (t.time === openTime) {
+        isInTimeWindow = true;
+      }
+
+      if (t.time === closeTime) {
+        isInTimeWindow = false;
+      }
+
+      if (isInTimeWindow) {
+        availableTimes.push(t);
+      }
+    });
+
+    return availableTimes;
+  }
+
   return (
     <div className="w-[27%] relative text-reg">
       <div className="fixed w-[15%] bg-white rounded p-3 shadow">
@@ -14,16 +50,25 @@ export default function ReservationCard() {
             className="bg-white py-3 border-b font-light"
             id=""
           >
-            <option value="">1 person</option>
-            <option value="">2 people</option>
+            {partySize.map((party) => (
+              <option
+                key={party.value}
+                value={party.value}
+              >
+                {party.label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-col w-[48%]">
             <label>Date</label>
-            <input
-              type="text"
-              className="bg-white py-3 border-b font-light w-28"
+            <DatePicker
+              selected={selectedDate}
+              onChange={handleChangeDate}
+              className="bg-white py-3 border-b font-light text-reg w-24"
+              dateFormat="MMMM d"
+              wrapperClassName="w-[48%]"
             />
           </div>
           <div className="flex flex-col w-[48%]">
@@ -33,8 +78,14 @@ export default function ReservationCard() {
               id=""
               className="bg-white py-3 border-b font-light"
             >
-              <option value="">7:30 AM</option>
-              <option value="">12:30 7PM</option>
+              {filterTimeByRestaurantHours().map((time) => (
+                <option
+                  key={time.time}
+                  value={time.time}
+                >
+                  {time.displayTime}
+                </option>
+              ))}
             </select>
           </div>
         </div>

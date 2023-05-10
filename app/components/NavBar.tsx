@@ -16,7 +16,6 @@ export default function NavBar() {
     }
   }, []);
 
-  console.log(`NavBar loading: ${loading}`);
   return (
     <nav className="bg-white p-2 flex justify-between">
       <Link
