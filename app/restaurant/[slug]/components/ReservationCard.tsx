@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { partySize, times } from "../../../../data";
+import { partySize, times } from "@/data/index";
 import DatePicker from "react-datepicker";
 import { time } from "console";
 
