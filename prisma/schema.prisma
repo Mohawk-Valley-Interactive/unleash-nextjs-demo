@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Restaurant {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
   name        String
   description String
   open_time   String
@@ -22,12 +22,14 @@ model Restaurant {
   price       PRICE
   items       Item[]
   cuisine_id  Int
-  cuisine     Cuisine  @relation(fields: [cuisine_id], references: [id])
+  cuisine     Cuisine   @relation(fields: [cuisine_id], references: [id])
   location_id Int
-  location    Location @relation(fields: [location_id], references: [id])
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  location    Location  @relation(fields: [location_id], references: [id])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
   reviews     Review[]
+  tables      Table[]
+  bookings    Booking[]
 }
 
 model Review {
@@ -82,6 +84,44 @@ model Location {
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
   restaurants Restaurant[]
+}
+
+model Booking {
+  id                Int                @id @default(autoincrement())
+  number_of_people  Int
+  booking_time      DateTime
+  booker_email      String
+  booker_phone      String
+  booker_first_name String
+  booker_last_name  String
+  booker_occasion   String
+  booker_request    String
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  restaurant_id     Int
+  restaurant        Restaurant         @relation(fields: [restaurant_id], references: [id])
+  tables            BookingsOnTables[]
+}
+
+model Table {
+  id            Int                @id @default(autoincrement())
+  seats         Int
+  restaurant_id Int
+  restaurant    Restaurant         @relation(fields: [restaurant_id], references: [id])
+  bookings      BookingsOnTables[]
+  created_at    DateTime           @default(now())
+  updated_at    DateTime           @updatedAt
+}
+
+model BookingsOnTables {
+  booking_id Int
+  booking    Booking  @relation(fields: [booking_id], references: [id])
+  table_id   Int
+  table      Table    @relation(fields: [table_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([booking_id, table_id])
 }
 
 enum PRICE {

@@ -54,5 +54,19 @@ export async function POST(req: NextRequest) {
     .setExpirationTime("24h")
     .sign(secret);
 
-  return NextResponse.json({ token: token });
+  const res = NextResponse.json({
+    firstName: user.first_name,
+    lastName: user.last_name,
+    email: user.email,
+    phone: user.phone,
+    city: user.city,
+  });
+
+  res.cookies.set({
+    name: "jwt",
+    value: token,
+    expires: Date.now() + 24 * 60 * 60 * 1000,
+  });
+
+  return res;
 }
