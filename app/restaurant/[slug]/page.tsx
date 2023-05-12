@@ -86,6 +86,7 @@ export default async function RestaurantDetails({ params }: Props) {
         <Reviews reviews={restaurant.reviews} />
       </div>
       <ReservationCard
+        slug={params.slug}
         openTime={restaurant.open_time}
         closeTime={restaurant.close_time}
       />

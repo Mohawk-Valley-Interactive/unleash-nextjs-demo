@@ -116,5 +116,5 @@ export async function GET(req: NextRequest, { params }: Params) {
       return timeIsAfterOpeningHour && timeIsBeforeClosingHour;
     });
 
-  return NextResponse.json({ availabilities });
+  return NextResponse.json(availabilities);
 }
