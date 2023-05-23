@@ -5,6 +5,7 @@ import RestaurantCard, {
 } from "./components/RestaurantCard";
 import { default as prismaClient } from "@/lib/prismaClient";
 import { PRICE } from "@prisma/client";
+import { cookies } from "next/headers";
 
 async function fetchCuisines() {
   return prismaClient.cuisine.findMany();
@@ -79,6 +80,7 @@ interface Props {
 }
 
 export default async function Search({ searchParams }: Props) {
+  const c = cookies(); // To bypass static
   const cuisines = await fetchCuisines();
   const locations = await fetchLocations();
   const restaurantLocations = await fetchRestaurants(searchParams);
