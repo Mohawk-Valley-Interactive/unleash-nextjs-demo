@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import * as jose from "jose";
 
 export async function middleware(req: NextRequest, res: NextResponse) {
@@ -43,7 +42,7 @@ async function authTokenVerification(req: NextRequest, res: NextResponse) {
     );
   }
 
-  const tokenPayload = jwt.decode(token) as { email: string };
+  const tokenPayload = jose.decodeJwt(token) as { email: string };
 
   if (!tokenPayload.email) {
     return NextResponse.json(

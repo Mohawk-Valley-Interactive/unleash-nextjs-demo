@@ -6,6 +6,7 @@ import RestaurantCard, {
 } from "./components/RestaurantCard";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { cookies } from "next/headers";
 
 async function fetchRestaurants(): Promise<RestaurantCardType[]> {
   const restaurants = await prismaClient.restaurant.findMany({
@@ -28,7 +29,8 @@ export const metadata = {
   title: "OpenTable",
 };
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: {} }) {
+  const c = cookies(); // To bypass static
   const restaurants = await fetchRestaurants();
 
   return (

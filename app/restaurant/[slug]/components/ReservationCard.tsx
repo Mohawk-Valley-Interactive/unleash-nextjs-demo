@@ -55,7 +55,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
 
   return (
     <div className="w-[27%] relative text-reg">
-      <div className="fixed w-[20%] bg-white rounded p-3 shadow">
+      <div className="bg-white rounded p-3 shadow">
         <div className="text-center border-b pb-2 font-bold">
           <h4 className="mr-7 text-lg">Make a Reservation</h4>
         </div>
