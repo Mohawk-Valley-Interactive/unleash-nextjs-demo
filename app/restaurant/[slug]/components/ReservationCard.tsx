@@ -7,6 +7,7 @@ import useAvailabilities from "@/hooks/useAvailabilities";
 import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 import { Time, convertToDisplayTime } from "@/utils/convertToDisplayTime";
+import { useFlag } from "@unleash/nextjs/client";
 
 interface Props {
   slug: string;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default function ReservationCard({ slug, openTime, closeTime }: Props) {
+  const isReservationEnabled = useFlag("feature-reservation");
   const { loading, error, data, fetchAvailabilities } = useAvailabilities();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -113,9 +115,17 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
           <button
             className="bg-red-500 rounded w-full px-4 text-white font-bold h-16"
             onClick={handleFindTime}
-            disabled={loading}
+            disabled={!isReservationEnabled || loading}
           >
-            {loading ? <CircularProgress color="inherit" /> : "Find a Time"}
+            {isReservationEnabled ? (
+              loading ? (
+                <CircularProgress color="inherit" />
+              ) : (
+                "Find a Time"
+              )
+            ) : (
+              "Coming Soon!"
+            )}
           </button>
         </div>
 

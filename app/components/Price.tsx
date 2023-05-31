@@ -1,10 +1,14 @@
+"use client";
 import { PRICE } from "@prisma/client";
+import { useFlag } from "@unleash/nextjs/client";
 
 interface Props {
   price: PRICE;
 }
 
 export default function Price({ price }: Props) {
+  const isEnabled = useFlag("feature-show-price");
+
   function renderPrice(p: PRICE) {
     switch (p) {
       case PRICE.CHEAP:
@@ -37,7 +41,7 @@ export default function Price({ price }: Props) {
     }
   }
 
-  const output = renderPrice(price);
+  const output = isEnabled ? renderPrice(price) : null;
 
   return <div className="flex mr-3">{output}</div>;
 }
