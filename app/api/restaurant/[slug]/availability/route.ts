@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Table } from "@prisma/client";
 
 import prisma from "@/lib/prismaClient";
 import findAvailableTables from "../../../../../services/restaurant/findAvailableTables";
