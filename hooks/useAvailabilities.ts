@@ -1,3 +1,4 @@
+import getApiUrl from "@/utils/getApiUrl";
 import axios from "axios";
 import { useState } from "react";
 
@@ -25,10 +26,11 @@ export default function useAvailabilities() {
     time,
   }: FetchAvailabilitiesProps) {
     setLoading(true);
+    const host = getApiUrl();
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/restaurant/${slug}/availability`,
+        `${host}/api/restaurant/${slug}/availability`,
         { params: { date, time, partySize } }
       );
 
