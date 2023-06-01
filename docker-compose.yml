@@ -10,9 +10,9 @@ services:
       dockerfile: ./Dockerfile.app
     command: sh -c "npx prisma migrate dev --skip-generate --name 'init' && node server.js"
     environment:
-      API_URL: "http://localhost:3000"
       DATABASE_URL: "postgresql://postgres:example@db:5432/mydb?schema=public"
       JWT_SECRET: "a bunch of silly stuff"
+      NEXT_PUBLIC_API_URL: "http://localhost:3000"
       NODE_ENV: production
       UNLEASH_SERVER_API_URL: "https://us.app.unleash-hosted.com/ushosted/api/"
       UNLEASH_SERVER_API_TOKEN: ""
