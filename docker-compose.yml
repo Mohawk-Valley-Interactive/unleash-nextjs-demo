@@ -8,16 +8,16 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.app
-    command: sh -c "npx prisma migrate dev --skip-generate --name 'init' && node server.js"
+    command: sh -c "npx prisma migrate deploy --schema ./prisma/schema.prisma && node server.js"
     environment:
       DATABASE_URL: "postgresql://postgres:example@db:5432/mydb?schema=public"
       JWT_SECRET: "a bunch of silly stuff"
       NEXT_PUBLIC_API_URL: "http://localhost:3000"
       NODE_ENV: production
-      UNLEASH_SERVER_API_URL: "https://us.app.unleash-hosted.com/ushosted/api/"
-      UNLEASH_SERVER_API_TOKEN: ""
+      UNLEASH_FRONTEND_API_TOKEN: "_CHANGE_ME_"
       UNLEASH_FRONTEND_API_URL: "https://us.app.unleash-hosted.com/ushosted/api/frontend"
-      UNLEASH_FRONTEND_API_TOKEN: ""
+      UNLEASH_SERVER_API_TOKEN: "_CHANGE_ME_"
+      UNLEASH_SERVER_API_URL: "https://us.app.unleash-hosted.com/ushosted/api/"
     ports:
       - 3000:3000
 
