@@ -1305,22 +1305,21 @@ export default async function handler(
     ],
   });
 
-  await prisma.table.createMany({
-    data: [
-      {
-        restaurant_id: vivaanId,
-        seats: 4,
-      },
-      {
-        restaurant_id: vivaanId,
-        seats: 4,
-      },
-      {
-        restaurant_id: vivaanId,
-        seats: 2,
-      },
-    ],
+  const tables: { restaurant_id: number; seats: number }[] = [];
+  restaurants.forEach((r) => {
+    const seatCount = [2, 4, 6, 8];
+    const tableCount = [3, 4, 5, 6, 7, 8];
+    let tablesAvailable =
+      tableCount[Math.floor(Math.random() * tableCount.length)];
+    while (tablesAvailable > 0) {
+      tablesAvailable -= 1;
+      tables.push({
+        restaurant_id: r.id,
+        seats: seatCount[Math.floor(Math.random() * seatCount.length)],
+      });
+    }
   });
+  await prisma.table.createMany({ data: tables });
 
   res.status(200).json({ name: "hello" });
 }

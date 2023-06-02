@@ -1,5 +1,6 @@
 import NavBar from "./components/NavBar";
 import AuthenticationProvider from "./context/AuthorizationProvider";
+import FlagProvider from "./context/FlagProvider";
 import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -8,6 +9,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const clientUrl = process.env.UNLEASH_FRONTEND_API_URL;
+  const clientKey = process.env.UNLEASH_FRONTEND_API_TOKEN;
+
   return (
     <html lang="en">
       {/*
@@ -16,14 +20,19 @@ export default function RootLayout({
       */}
       <head />
       <body>
-        <AuthenticationProvider>
-          <div className="bg-gray-100 min-h-screen w-screen">
-            <div className="max-w-screen-2xl m-auto bg-white text-black">
-              <NavBar />
-              {children}
+        <FlagProvider
+          clientKey={clientKey}
+          clientUrl={clientUrl}
+        >
+          <AuthenticationProvider>
+            <div className="bg-gray-100 min-h-screen w-screen">
+              <div className="max-w-screen-2xl m-auto bg-white text-black">
+                <NavBar />
+                {children}
+              </div>
             </div>
-          </div>
-        </AuthenticationProvider>
+          </AuthenticationProvider>
+        </FlagProvider>
       </body>
     </html>
   );

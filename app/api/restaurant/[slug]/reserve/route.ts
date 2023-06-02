@@ -3,12 +3,38 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismaClient";
 import findAvailableTables from "@/services/restaurant/findAvailableTables";
 import validator from "validator";
+import { getFlagsClient } from "@/utils/getFlagsClient";
 
 interface Params {
   params: { slug: string };
 }
 
 export async function POST(req: NextRequest, { params }: Params) {
+  let flags = null;
+  try {
+    flags = await getFlagsClient(req);
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        status: 500,
+        error: "Internal Server Error",
+        message: (error as Error)?.message || undefined,
+      }),
+      {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      }
+    );
+  }
+
+  const isEnabled = flags.isEnabled("feature-reservation");
+  if (!isEnabled) {
+    return NextResponse.json(
+      { errorMessage: "Endpoint unavailable." },
+      { status: 404 }
+    );
+  }
+
   const slug = params.slug;
   const { searchParams } = new URL(req.url);
   const { firstName, lastName, email, phone, occasion, request } =

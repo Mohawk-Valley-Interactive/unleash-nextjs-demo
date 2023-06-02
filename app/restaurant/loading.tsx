@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="bg-purple-900">
+    <div className="bg-gray-400">
       <div className="h-96 overflow-hidden animate-pulse bg-slate-200">
         <div className={`bg-center h-full`} />
       </div>
@@ -19,7 +19,7 @@ export default function Loading() {
               <p className="text-reg ml-3"></p>
             </div>
             <div>
-              <p className="text-reg ml-1 ml-4"> </p>
+              <p className="text-reg ml-4"></p>
             </div>
           </div>
         </div>
