@@ -9,8 +9,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const clientUrl = process.env.UNLEASH_FRONTEND_URL;
-  const clientKey = process.env.UNLEASH_FRONTEND_TOKEN;
+  const clientUrl = process.env.UNLEASH_FRONTEND_API_URL;
+  const clientKey = process.env.UNLEASH_FRONTEND_API_TOKEN;
 
   return (
     <html lang="en">

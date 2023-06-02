@@ -1,3 +1,4 @@
+import getApiUrl from "@/utils/getApiUrl";
 import axios from "axios";
 import { Dispatch, SetStateAction, useState } from "react";
 
@@ -34,8 +35,9 @@ export default function useReservation() {
   }: ReservationProps) {
     setLoading(true);
     try {
+      const host = getApiUrl();
       const response = await axios.post(
-        `http://localhost:3000/api/restaurant/${slug}/reserve`,
+        `${host}/api/restaurant/${slug}/reserve`,
         {
           firstName: bookerFirstName,
           lastName: bookerLastName,

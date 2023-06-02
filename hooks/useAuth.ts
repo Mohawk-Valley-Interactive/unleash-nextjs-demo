@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuthState } from "../app/context/AuthorizationProvider";
 import { getCookie, deleteCookie } from "cookies-next";
+import getApiUrl from "@/utils/getApiUrl";
 
 export interface SignInParams {
   email: string;
@@ -29,13 +30,11 @@ export default function useAuth() {
           loading: true,
         };
       });
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signin",
-        {
-          email,
-          password,
-        }
-      );
+      const host = getApiUrl();
+      const response = await axios.post(`${host}/api/auth/signin`, {
+        email,
+        password,
+      });
 
       const jwt = getCookie("jwt");
       axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
@@ -74,17 +73,15 @@ export default function useAuth() {
           loading: true,
         };
       });
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
-        {
-          email,
-          password,
-          firstName,
-          lastName,
-          city,
-          phone,
-        }
-      );
+      const host = getApiUrl();
+      const response = await axios.post(`${host}/api/auth/signup`, {
+        email,
+        password,
+        firstName,
+        lastName,
+        city,
+        phone,
+      });
 
       setAuthState({
         data: response.data,
@@ -121,8 +118,8 @@ export default function useAuth() {
 
         return;
       }
-
-      const response = await axios.get("http://localhost:3000/api/users/me", {
+      const host = getApiUrl();
+      const response = await axios.get(`${host}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -154,7 +151,8 @@ export default function useAuth() {
 
     // todo: someday, we might actually cache creds so calling the service
     //       will be helpful
-    const response = await axios.post("http://localhost:3000/api/auth/signout");
+    const host = getApiUrl();
+    const response = await axios.post(`${host}/api/auth/signout`);
 
     const jwt = getCookie("jwt");
     if (jwt) {
