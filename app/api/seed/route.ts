@@ -1,16 +1,12 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import { default as prisma } from "@/lib/prismaClient";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prismaClient";
 import { PRICE } from "@prisma/client";
 
 type Data = {
   name: string;
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export async function GET(req: NextRequest) {
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
@@ -1321,5 +1317,5 @@ export default async function handler(
   });
   await prisma.table.createMany({ data: tables });
 
-  res.status(200).json({ name: "hello" });
+  return NextResponse.json({ name: "hello" });
 }
