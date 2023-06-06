@@ -93,5 +93,14 @@ export async function GET(req: NextRequest, { params }: Params) {
       return timeIsAfterOpeningHour && timeIsBeforeClosingHour;
     });
 
-  return NextResponse.json(availabilities);
+  const debugData = [
+    ...availabilities,
+    {
+      time: "00:00:00.000Z",
+      available: "false",
+      customerData: "HERE IS SOME IMPORTANT CUSTOMER DATA. LAWSUIT INBOUND.",
+    },
+  ];
+
+  return NextResponse.json(debugData);
 }

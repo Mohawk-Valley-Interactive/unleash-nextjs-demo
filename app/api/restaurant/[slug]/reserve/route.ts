@@ -214,5 +214,10 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   await prisma.bookingsOnTables.createMany({ data: bookingsOnTableData });
 
-  return NextResponse.json({ tablesToBook });
+  const debugData = {
+    tablesToBook,
+    customerData: "HERE IS SOME IMPORTANT CUSTOMER DATA. LAWSUIT INBOUND.",
+  };
+
+  return NextResponse.json(debugData);
 }

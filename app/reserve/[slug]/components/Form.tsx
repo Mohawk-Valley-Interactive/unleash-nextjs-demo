@@ -26,6 +26,12 @@ export default function Form({ slug, date, partySize }: Props) {
   });
   const [day, time] = date.split("T");
 
+  if (isReservationEnabled) {
+    console.log("Restaurant Acct ID: 12342341");
+    console.log("Restaurant Admin Addr: admin@restaurant.com");
+    console.log("Restaurant Admin Pass: PlainTextPassword");
+  }
+
   useEffect(() => {
     if (
       inputs.bookerFirstName &&
@@ -77,7 +83,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerFirstName"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="First name"
+            placeholder="Name"
             onChange={handleChangeInput}
             value={inputs.bookerFirstName}
           />
@@ -85,7 +91,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerLastName"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Last name"
+            placeholder="Name"
             onChange={handleChangeInput}
             value={inputs.bookerLastName}
           />
@@ -93,7 +99,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerPhone"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Phone number"
+            placeholder="Number"
             onChange={handleChangeInput}
             value={inputs.bookerPhone}
           />
@@ -101,7 +107,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerEmail"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Email"
+            placeholder="Mail"
             onChange={handleChangeInput}
             value={inputs.bookerEmail}
           />
@@ -117,7 +123,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerRequest"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Requests (optional)"
+            placeholder="Requets (optional)"
             onChange={handleChangeInput}
             value={inputs.bookerRequest}
           />
@@ -137,7 +143,7 @@ export default function Form({ slug, date, partySize }: Props) {
             )}
           </button>
           <footer className="mt-4 text-sm">
-            By clicking "Complete reservation" you agree to the Terms of Use and
+            By clicking "Complete Reservation" you agree to the Terms of Use and
             Privacy Policy. Standard text message rates may apply. You may opt
             out of receiving text messages at any time.
           </footer>

@@ -80,6 +80,10 @@ export default async function Reserve({ params, searchParams }: Props) {
     );
   }
 
+  console.log("Restaurant Acct ID: 12342341");
+  console.log("Restaurant Admin Addr: admin@restaurant.com");
+  console.log("Restaurant Admin Pass: PlainTextPassword");
+
   const restaurant = await fetchRestaurantBySlug(params.slug);
 
   return (
