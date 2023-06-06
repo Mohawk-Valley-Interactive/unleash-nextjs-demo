@@ -95,7 +95,9 @@ export default function AuthButton({ isSignIn }: Props) {
   }, [isSignIn, data]);
 
   const modalInstructions = useMemo(() => {
-    return isSignIn ? "Log Into Your Account" : "Create Your OpenTable Account";
+    return isSignIn
+      ? "Log Into Your Account"
+      : "Create Your RuntimeDining Account";
   }, [isSignIn]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
