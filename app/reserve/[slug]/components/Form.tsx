@@ -3,6 +3,7 @@
 import useReservation from "@/hooks/useReservation";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useFlag } from "@unleash/nextjs/client";
 
 interface Props {
   slug: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function Form({ slug, date, partySize }: Props) {
+  const isReservationEnabled = useFlag("feature-reservation");
   const { loading, error, createReservation } = useReservation();
   const [disabled, setDisabled] = useState(true);
   const [booked, setBooked] = useState(false);
@@ -120,14 +122,18 @@ export default function Form({ slug, date, partySize }: Props) {
             value={inputs.bookerRequest}
           />
           <button
-            disabled={disabled || loading}
+            disabled={!isReservationEnabled || disabled || loading}
             className="bg-red-600 w-full p-3 h-[64px] text-white font-bold rounded disabled:bg-gray-300"
             onClick={handleClick}
           >
-            {loading ? (
-              <CircularProgress color="inherit" />
+            {isReservationEnabled ? (
+              loading ? (
+                <CircularProgress color="inherit" />
+              ) : (
+                "Complete Reservation"
+              )
             ) : (
-              "Complete Reservation"
+              "Coming Soon!"
             )}
           </button>
           <footer className="mt-4 text-sm">
