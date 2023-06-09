@@ -142,7 +142,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
                 return t.available ? (
                   <Link
                     href={`/reserve/${slug}?date=${date}T${t.time}&partySize=${partySize}`}
-                    className="bg-red-600 cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
+                    className="bg-[#0f4747]  cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
                   >
                     <p className="text-sm font-bold">
                       {convertToDisplayTime(t.time as Time)}
