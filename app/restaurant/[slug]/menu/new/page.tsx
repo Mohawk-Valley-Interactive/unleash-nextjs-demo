@@ -1,6 +1,6 @@
 import { default as prismaClient } from "@/lib/prismaClient";
-import RestaurantNavBar from "../components/RestaurantNavBar";
-import Menu from "./components/Menu";
+import RestaurantNavBar from "../../components/RestaurantNavBar";
+import Menu from "../components/Menu";
 import { Item } from "@prisma/client";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
@@ -55,22 +55,7 @@ export default async function RestaurantMenu({ params }: Props) {
   return (
     <div className="bg-white w-[100%] rounded p-3 shadow">
       <RestaurantNavBar slug={params.slug} />
-      {menuItems.length ? (
-        menuItems.map((item) => (
-          <div
-            id={item.id.toString()}
-            key={item.id.toString()}
-            className="mb-2"
-          >
-            <strong>
-              {item.name} - {item.price}
-            </strong>
-            <p>{item.description}</p>
-          </div>
-        ))
-      ) : (
-        <p>This restaurant does not have a menu available.</p>
-      )}
+      <Menu menu={menuItems} />
     </div>
   );
 }

@@ -118,7 +118,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
         </div>
         <div className="mt-5">
           <button
-            className="bg-red-500 rounded w-full px-4 text-white font-bold h-16"
+            className="bg-[#0f4747]  rounded w-full px-4 text-white font-bold h-16"
             onClick={handleFindTime}
             disabled={!isReservationEnabled || loading}
           >

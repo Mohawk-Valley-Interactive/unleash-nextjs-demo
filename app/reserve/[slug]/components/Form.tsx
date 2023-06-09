@@ -129,7 +129,7 @@ export default function Form({ slug, date, partySize }: Props) {
           />
           <button
             disabled={!isReservationEnabled || disabled || loading}
-            className="bg-red-600 w-full p-3 h-[64px] text-white font-bold rounded disabled:bg-gray-300"
+            className="bg-[#0f4747] w-full p-3 h-[64px] text-white font-bold rounded disabled:bg-gray-300"
             onClick={handleClick}
           >
             {isReservationEnabled ? (
