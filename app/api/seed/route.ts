@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismaClient";
 import { PRICE } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 type Data = {
   name: string;
 };
