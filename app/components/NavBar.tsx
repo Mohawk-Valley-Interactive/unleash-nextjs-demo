@@ -22,7 +22,7 @@ export default function NavBar() {
         href="/"
         className="font-bold text-gray-700 text-2xl"
       >
-        OpenTable
+        RuntimeDining
       </Link>
       <div>
         <div className="flex mr-6">

@@ -26,7 +26,7 @@ async function fetchRestaurants(): Promise<RestaurantCardType[]> {
 }
 
 export const metadata = {
-  title: "OpenTable",
+  title: "RuntimeDining",
 };
 
 export default async function Home({ searchParams }: { searchParams: {} }) {

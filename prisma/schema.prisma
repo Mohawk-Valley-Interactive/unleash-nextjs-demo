@@ -55,6 +55,9 @@ model User {
   city       String
   email      String   @unique
   phone      String
+  plan       PLAN     @default(value: FREE)
+  admin      Boolean  @default(false)
+  beta       Boolean  @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   Review     Review[]
@@ -123,6 +126,11 @@ model BookingsOnTables {
   updated_at DateTime @updatedAt
 
   @@id([booking_id, table_id])
+}
+
+enum PLAN {
+  FREE
+  PRO
 }
 
 enum PRICE {

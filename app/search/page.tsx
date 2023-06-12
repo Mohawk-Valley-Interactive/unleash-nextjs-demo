@@ -68,7 +68,7 @@ async function fetchRestaurants({
 }
 
 export const metadata = {
-  title: "Search Restaurants | OpenTable",
+  title: "Search Restaurants | Libre",
 };
 
 interface Props {

@@ -1,16 +1,14 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import { default as prisma } from "@/lib/prismaClient";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prismaClient";
 import { PRICE } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
 
 type Data = {
   name: string;
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export async function GET(req: NextRequest) {
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
@@ -110,7 +108,7 @@ export default async function handler(
           "https://resizer.otstatic.com/v2/photos/wide-huge/3/26429498.jpg",
         price: PRICE.REGULAR,
         description:
-          "Welcome to Last Train to Delhi. We are a progressive Indian restaurant in the beautiful Glebe community in Ottawa. Our speciality is Northern Indian food, classics like Murg Mahkini and some modern dishes like Crispy Shrimp. We are a small cozy restaurant, so make sure that you reserve through OpenTable.",
+          "Welcome to Last Train to Delhi. We are a progressive Indian restaurant in the beautiful Glebe community in Ottawa. Our speciality is Northern Indian food, classics like Murg Mahkini and some modern dishes like Crispy Shrimp. We are a small cozy restaurant, so make sure that you reserve through RuntimeDining.",
         images: [
           "https://resizer.otstatic.com/v2/photos/xlarge/1/29477326.jpg",
           "https://resizer.otstatic.com/v2/photos/xlarge/1/29777084.jpg",
@@ -1321,5 +1319,5 @@ export default async function handler(
   });
   await prisma.table.createMany({ data: tables });
 
-  res.status(200).json({ name: "hello" });
+  return NextResponse.json({ name: "hello" });
 }

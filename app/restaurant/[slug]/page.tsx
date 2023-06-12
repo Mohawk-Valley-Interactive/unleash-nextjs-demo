@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props) {
   const name = await fetchRestaurantNameBySlug(params.slug);
 
   return {
-    title: `${name} | OpenTable`,
+    title: `${name} | RuntimeDining`,
   };
 }
 

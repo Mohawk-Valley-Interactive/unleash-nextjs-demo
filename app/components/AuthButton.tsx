@@ -80,7 +80,7 @@ export default function AuthButton({ isSignIn }: Props) {
     return isSignIn ? (
       <button
         onClick={handleOpen}
-        className="bg-blue-400 text-white border p-1 px-4 rounded mr-3"
+        className="bg-[#0f4747] text-white border p-1 px-4 rounded mr-3"
       >
         {data ? "Sign Out" : "Sign In"}
       </button>
@@ -95,7 +95,9 @@ export default function AuthButton({ isSignIn }: Props) {
   }, [isSignIn, data]);
 
   const modalInstructions = useMemo(() => {
-    return isSignIn ? "Log Into Your Account" : "Create Your OpenTable Account";
+    return isSignIn
+      ? "Log Into Your Account"
+      : "Create Your RuntimeDining Account";
   }, [isSignIn]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,7 +171,7 @@ export default function AuthButton({ isSignIn }: Props) {
                   </>
                 )}
                 <button
-                  className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
+                  className="uppercase bg-[#0f4747] w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
                   disabled={data === null && disabled}
                   onClick={handleClick}
                 >
