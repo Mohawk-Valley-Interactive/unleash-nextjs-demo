@@ -119,7 +119,7 @@ export default function useAuth() {
         return;
       }
       const host = getApiUrl();
-      const response = await axios.get(`${host}/api/users/me`, {
+      const response = await axios.get(`${host}/api/profile/me`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

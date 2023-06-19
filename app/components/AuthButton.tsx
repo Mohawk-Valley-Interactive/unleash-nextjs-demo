@@ -87,7 +87,7 @@ export default function AuthButton({ isSignIn }: Props) {
     ) : (
       <button
         onClick={handleOpen}
-        className="border p-1 px-4 rounded"
+        className="border p-1 px-4 rounded mr-3"
       >
         Sign Up
       </button>
