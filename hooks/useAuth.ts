@@ -39,7 +39,6 @@ export default function useAuth() {
       const jwt = getCookie("jwt");
       axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
 
-      console.log(`signIn ${response.data}`);
       setAuthState({
         data: response.data,
         error: null,
@@ -48,7 +47,6 @@ export default function useAuth() {
 
       onSuccess();
     } catch (error: any) {
-      console.log(`signIn error ${error.response.data.errorMessage}`);
       setAuthState({
         data: null,
         error: error.response.data.errorMessage,
@@ -141,7 +139,7 @@ export default function useAuth() {
     }
   };
 
-  const signOut = async () => {
+  const signOut = async (onSuccess: () => void) => {
     setAuthState((prev) => {
       return {
         ...prev,
@@ -167,6 +165,8 @@ export default function useAuth() {
         loading: false,
       };
     });
+
+    onSuccess();
   };
 
   return { fetchUser, signIn, signUp, signOut };

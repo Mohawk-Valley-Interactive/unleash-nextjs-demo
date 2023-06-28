@@ -8,6 +8,7 @@ import Modal from "@mui/material/Modal";
 import AuthModalInputs from "./AuthModalInputs";
 import useAuth from "../../hooks/useAuth";
 import { useAuthState } from "../context/AuthorizationProvider";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -34,6 +35,7 @@ interface Props {
  *        handled.
  */
 export default function AuthButton({ isSignIn }: Props) {
+  const router = useRouter();
   const { signIn, signUp, signOut } = useAuth();
   const { loading, data, error } = useAuthState();
   const [open, setOpen] = useState(false);
@@ -110,7 +112,7 @@ export default function AuthButton({ isSignIn }: Props) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isSignIn) {
       if (data) {
-        signOut();
+        signOut(() => router.push("/"));
       } else {
         signIn({
           email: inputs.email,
