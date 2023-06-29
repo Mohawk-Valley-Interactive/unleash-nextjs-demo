@@ -9,14 +9,18 @@ interface Props {
   profileData: UserData | null;
 }
 export default function ProfileViewer({ profileData }: Props) {
-  const { data } = useAuthState();
-  const { saveProfile } = useProfile();
+  const { data: authData } = useAuthState();
+  const { data: updatedData, loadProfile, saveProfile } = useProfile();
   const [userData, setUserData] = useState<UserData>(() => {
-    if (profileData) {
+    if (updatedData) {
+      return { ...updatedData };
+    } else if (profileData) {
       return { ...profileData };
     } else {
       return {
         id: 0,
+        created_at: "",
+        updated_at: "",
         email: "",
         first_name: "",
         last_name: "",
@@ -30,15 +34,34 @@ export default function ProfileViewer({ profileData }: Props) {
   const [disabled, setDisabled] = useState<boolean>(true);
 
   useEffect(() => {
-    setDisabled(
-      userData?.first_name == profileData?.first_name &&
-        userData?.last_name == profileData?.last_name &&
-        userData?.city == profileData?.city &&
-        userData?.phone == profileData?.phone &&
-        userData?.admin == profileData?.admin &&
-        userData?.beta == profileData?.beta
-    );
+    if (updatedData) {
+      setDisabled(
+        userData.first_name == updatedData.first_name &&
+          userData.last_name == updatedData.last_name &&
+          userData.city == updatedData.city &&
+          userData.phone == updatedData.phone &&
+          userData.admin == updatedData.admin &&
+          userData.beta == updatedData.beta
+      );
+    } else if (profileData) {
+      setDisabled(
+        userData.first_name == profileData.first_name &&
+          userData.last_name == profileData.last_name &&
+          userData.city == profileData.city &&
+          userData.phone == profileData.phone &&
+          userData.admin == profileData.admin &&
+          userData.beta == profileData.beta
+      );
+    } else {
+      setDisabled(false);
+    }
   }, [userData]);
+
+  useEffect(() => {
+    setUserData(() => {
+      return { ...userData, ...updatedData };
+    });
+  }, [updatedData]);
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -48,12 +71,31 @@ export default function ProfileViewer({ profileData }: Props) {
     saveProfile(userData, (e) => {
       if (typeof e !== "string") {
         setDisabled(true);
+        loadProfile(userData.email || "me");
       }
     });
   }
 
   return (
     <div className="w-[50%]">
+      <div className="my-3">
+        <label
+          htmlFor="created_at"
+          className="text-sm font-bold w-1/6 mr-2"
+        >
+          Created:
+        </label>
+        <span>{userData.created_at}</span>
+      </div>
+      <div className="my-3">
+        <label
+          htmlFor="created_at"
+          className="text-sm font-bold w-1/6 mr-2"
+        >
+          Updated:
+        </label>
+        <span>{userData.updated_at}</span>
+      </div>
       <div className="my-3">
         <label
           htmlFor="first_name"
@@ -118,7 +160,7 @@ export default function ProfileViewer({ profileData }: Props) {
           onChange={handleInputChange}
         />
       </div>
-      {data?.admin ? (
+      {authData?.admin ? (
         <div className="my-3">
           <label
             htmlFor="admin"

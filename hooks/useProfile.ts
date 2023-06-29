@@ -9,6 +9,8 @@ export interface UserData {
   id: number;
   first_name: string;
   last_name: string;
+  created_at: string;
+  updated_at: string;
   city: string;
   email: string;
   phone: string;
@@ -54,7 +56,7 @@ export default function useProfile(): UseProfileInterface {
     }
   }
 
-  async function saveProfile(p: UserData, callback: (e) => void) {
+  async function saveProfile(p: UserData, callback: (e: any) => void) {
     const token = getCookie("jwt");
     if (!token) {
       setData(null);

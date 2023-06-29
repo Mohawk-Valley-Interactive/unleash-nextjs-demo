@@ -1,11 +1,13 @@
 "use client";
 import { CircularProgress } from "@mui/material";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProfile from "@/hooks/useProfile";
 import errorMascot from "../../../public/images/error.png";
 import ProfileViewer from "./components/ProfileViewer";
 import { useAuthState } from "../../context/AuthorizationProvider";
+import ProfileList from "./components/ProfileList";
+import useProfileList from "@/hooks/useProfileList";
 
 interface Props {
   params: {
@@ -14,11 +16,23 @@ interface Props {
 }
 
 export default function Profile({ params }: Props) {
-  const authState = useAuthState();
+  const { data: authData } = useAuthState();
   const { data, error, loading, loadProfile } = useProfile();
   useEffect(() => {
     loadProfile(params.slug);
   }, [params.slug]);
+
+  const [profileList, setProfileList] = useState([]);
+  useEffect(() => {
+    if (authData?.admin) {
+      const fetchProfileList = async () => {
+        const profileList = await useProfileList();
+        setProfileList(profileList);
+      };
+
+      fetchProfileList();
+    }
+  }, [authData]);
 
   return (
     <div className="center ml-2">
@@ -41,6 +55,7 @@ export default function Profile({ params }: Props) {
           <ProfileViewer profileData={data} />
         </div>
       )}
+      {authData?.admin ? <ProfileList profileListData={profileList} /> : null}
     </div>
   );
 }

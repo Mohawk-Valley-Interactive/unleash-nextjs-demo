@@ -60,6 +60,8 @@ export async function POST(req: NextRequest) {
     email: user.email,
     phone: user.phone,
     city: user.city,
+    admin: user.admin,
+    beta: user.beta,
   });
 
   res.cookies.set({

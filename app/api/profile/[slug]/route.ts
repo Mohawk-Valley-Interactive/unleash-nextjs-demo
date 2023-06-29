@@ -32,6 +32,8 @@ export async function GET(req: NextRequest, { params }: Params) {
     where: { email: desiredUser },
     select: {
       id: true,
+      created_at: true,
+      updated_at: true,
       first_name: true,
       last_name: true,
       city: true,
@@ -73,6 +75,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const { body } = await req.json();
   delete body.id;
   delete body.email;
+  delete body.created_at;
+  delete body.updated_at;
 
   const user = await prisma.user.update({
     where: { email: desiredUser },
