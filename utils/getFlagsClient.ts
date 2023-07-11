@@ -28,6 +28,7 @@ export async function getFlagsClient(req: NextRequest): Promise<{
     req.ip;
   const userId = req.nextUrl.searchParams.get("userId") || undefined;
 
+  let admin: string = "";
   let beta: string = "";
   let city: string = "";
   let firstname: string = "";
@@ -44,6 +45,7 @@ export async function getFlagsClient(req: NextRequest): Promise<{
         where: { email },
       });
       if (user) {
+        admin = user.admin ? "true" : "false";
         beta = user.beta ? "true" : "false";
         city = user.city;
         firstname = user.first_name;
@@ -54,9 +56,10 @@ export async function getFlagsClient(req: NextRequest): Promise<{
   }
 
   const context: Context = {
-    userId: userId,
+    userId,
     sessionId,
     remoteAddress,
+    admin,
     beta,
     city,
     email,

@@ -4,6 +4,7 @@ import axios from "axios";
 import getApiUrl from "@/utils/getApiUrl";
 import { useState } from "react";
 import { getCookie } from "cookies-next";
+import { useUnleashContext } from "@unleash/nextjs";
 
 export interface UserData {
   id: number;
@@ -31,6 +32,7 @@ export default function useProfile(): UseProfileInterface {
   const [data, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const updateContext = useUnleashContext();
 
   async function loadProfile(id: string) {
     setLoading(true);
@@ -79,6 +81,17 @@ export default function useProfile(): UseProfileInterface {
       setError(`${response.status} - ${response.statusText}`);
       callback(error);
     } else {
+      updateContext({
+        properties: {
+          admin: response.data.admin ? "true" : "false",
+          beta: response.data.beta ? "true" : "false",
+          city: response.data.city,
+          email: response.data.email,
+          firstname: response.data.first_name,
+          lastname: response.data.last_name,
+          phone: response.data.phone,
+        },
+      });
       setData(response.data);
       setError(null);
       callback(response.data);

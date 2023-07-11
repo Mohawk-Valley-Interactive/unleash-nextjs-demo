@@ -2,6 +2,7 @@ import axios from "axios";
 import { useAuthState } from "../app/context/AuthorizationProvider";
 import { getCookie, deleteCookie } from "cookies-next";
 import getApiUrl from "@/utils/getApiUrl";
+import { useUnleashContext } from "@unleash/nextjs";
 
 export interface SignInParams {
   email: string;
@@ -21,6 +22,7 @@ export interface SignUpParams {
 
 export default function useAuth() {
   const { data, error, loading, setAuthState } = useAuthState();
+  const updateContext = useUnleashContext();
 
   const signIn = async ({ email, password, onSuccess }: SignInParams) => {
     try {
@@ -46,6 +48,17 @@ export default function useAuth() {
       });
 
       onSuccess();
+      updateContext({
+        properties: {
+          admin: response.data.admin ? "true" : "false",
+          beta: response.data.beta ? "true" : "false",
+          city: response.data.city,
+          email: response.data.email,
+          firstname: response.data.first_name,
+          lastname: response.data.last_name,
+          phone: response.data.phone,
+        },
+      });
     } catch (error: any) {
       setAuthState({
         data: null,
@@ -167,6 +180,17 @@ export default function useAuth() {
     });
 
     onSuccess();
+    updateContext({
+      properties: {
+        admin: "false",
+        beta: "false",
+        city: "",
+        email: "",
+        firstname: "",
+        lastname: "",
+        phone: "",
+      },
+    });
   };
 
   return { fetchUser, signIn, signUp, signOut };

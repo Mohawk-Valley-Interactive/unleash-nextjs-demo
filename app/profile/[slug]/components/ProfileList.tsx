@@ -9,7 +9,10 @@ export default function ProfileList({ profileListData }: Props) {
   return (
     <div>
       {profileListData.map((p) => (
-        <Link href={`/profile/${p.email}`}>
+        <Link
+          key={`${p.email}`}
+          href={`/profile/${p.email}`}
+        >
           <p>
             {p.email} - {p.first_name} {p.last_name}
           </p>
