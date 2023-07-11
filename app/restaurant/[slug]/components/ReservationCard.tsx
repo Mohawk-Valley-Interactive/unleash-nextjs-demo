@@ -23,6 +23,12 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
   const [time, setTime] = useState(openTime);
   const [partySize, setPartySize] = useState("2");
 
+  if (isReservationEnabled) {
+    console.log("Restaurant Acct ID: 12342341");
+    console.log("Restaurant Admin Addr: admin@restaurant.com");
+    console.log("Restaurant Admin Pass: PlainTextPassword");
+  }
+
   function handleChangeDate(date: Date | null) {
     if (date) {
       const d = date?.toISOString().split("T")[0];
@@ -62,11 +68,10 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
           <h4 className="mr-7 text-lg">Make a Reservation</h4>
         </div>
         <div className="my-3 flex flex-col">
-          <label htmlFor="">Party size</label>
+          <label htmlFor="party-size">Party size</label>
           <select
-            name=""
+            id="party-size"
             className="bg-white py-3 border-b font-light"
-            id=""
             value={partySize}
             onChange={(e) => setPartySize(e.target.value)}
           >
@@ -82,8 +87,9 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
         </div>
         <div className="flex justify-between">
           <div className="flex flex-col w-[48%]">
-            <label>Date</label>
+            <label htmlFor="date-select">Date</label>
             <DatePicker
+              id="date-select"
               selected={selectedDate}
               onChange={handleChangeDate}
               className="bg-white py-3 border-b font-light text-reg w-24"
@@ -92,10 +98,9 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
             />
           </div>
           <div className="flex flex-col w-[48%]">
-            <label>Time</label>
+            <label htmlFor="time-select">Time</label>
             <select
-              name=""
-              id=""
+              id="time-select"
               value={time}
               onChange={(e) => setTime(e.target.value)}
               className="bg-white py-3 border-b font-light"
@@ -113,7 +118,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
         </div>
         <div className="mt-5">
           <button
-            className="bg-red-500 rounded w-full px-4 text-white font-bold h-16"
+            className="bg-[#0f4747]  rounded w-full px-4 text-white font-bold h-16"
             onClick={handleFindTime}
             disabled={!isReservationEnabled || loading}
           >
@@ -121,7 +126,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
               loading ? (
                 <CircularProgress color="inherit" />
               ) : (
-                "Find a Time"
+                "Find a Tme"
               )
             ) : (
               "Coming Soon!"
@@ -137,7 +142,7 @@ export default function ReservationCard({ slug, openTime, closeTime }: Props) {
                 return t.available ? (
                   <Link
                     href={`/reserve/${slug}?date=${date}T${t.time}&partySize=${partySize}`}
-                    className="bg-red-600 cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
+                    className="bg-[#0f4747]  cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3"
                   >
                     <p className="text-sm font-bold">
                       {convertToDisplayTime(t.time as Time)}

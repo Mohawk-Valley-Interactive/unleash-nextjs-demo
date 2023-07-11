@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "PLAN" AS ENUM ('FREE', 'PRO');
+
+-- CreateEnum
 CREATE TYPE "PRICE" AS ENUM ('CHEAP', 'REGULAR', 'EXPENSIVE');
 
 -- CreateTable
@@ -44,6 +47,9 @@ CREATE TABLE "User" (
     "city" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
+    "plan" "PLAN" NOT NULL DEFAULT 'FREE',
+    "admin" BOOLEAN NOT NULL DEFAULT false,
+    "beta" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

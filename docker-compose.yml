@@ -12,7 +12,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://postgres:example@db:5432/mydb?schema=public"
       JWT_SECRET: "a bunch of silly stuff"
-      NEXT_PUBLIC_API_URL: "http://localhost:3000"
+      NEXT_PUBLIC_API_URL: "http://localhost:3000" # Change when deploying to production to API URL!
       NODE_ENV: production
       UNLEASH_FRONTEND_API_TOKEN: "_CHANGE_ME_"
       UNLEASH_FRONTEND_API_URL: "https://us.app.unleash-hosted.com/ushosted/api/frontend"

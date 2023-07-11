@@ -8,6 +8,7 @@ import Modal from "@mui/material/Modal";
 import AuthModalInputs from "./AuthModalInputs";
 import useAuth from "../../hooks/useAuth";
 import { useAuthState } from "../context/AuthorizationProvider";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -34,6 +35,7 @@ interface Props {
  *        handled.
  */
 export default function AuthButton({ isSignIn }: Props) {
+  const router = useRouter();
   const { signIn, signUp, signOut } = useAuth();
   const { loading, data, error } = useAuthState();
   const [open, setOpen] = useState(false);
@@ -80,14 +82,14 @@ export default function AuthButton({ isSignIn }: Props) {
     return isSignIn ? (
       <button
         onClick={handleOpen}
-        className="bg-blue-400 text-white border p-1 px-4 rounded mr-3"
+        className="bg-[#0f4747] text-white border p-1 px-4 rounded mr-3"
       >
         {data ? "Sign Out" : "Sign In"}
       </button>
     ) : (
       <button
         onClick={handleOpen}
-        className="border p-1 px-4 rounded"
+        className="border p-1 px-4 rounded mr-3"
       >
         Sign Up
       </button>
@@ -95,7 +97,9 @@ export default function AuthButton({ isSignIn }: Props) {
   }, [isSignIn, data]);
 
   const modalInstructions = useMemo(() => {
-    return isSignIn ? "Log Into Your Account" : "Create Your OpenTable Account";
+    return isSignIn
+      ? "Log Into Your Account"
+      : "Create Your RuntimeDining Account";
   }, [isSignIn]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +112,7 @@ export default function AuthButton({ isSignIn }: Props) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isSignIn) {
       if (data) {
-        signOut();
+        signOut(() => router.push("/"));
       } else {
         signIn({
           email: inputs.email,
@@ -169,7 +173,7 @@ export default function AuthButton({ isSignIn }: Props) {
                   </>
                 )}
                 <button
-                  className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
+                  className="uppercase bg-[#0f4747] w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
                   disabled={data === null && disabled}
                   onClick={handleClick}
                 >

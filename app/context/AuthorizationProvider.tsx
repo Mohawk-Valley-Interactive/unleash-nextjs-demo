@@ -9,6 +9,8 @@ interface User {
   email: string;
   city: string;
   phone: string;
+  admin: boolean;
+  beta: boolean;
 }
 
 interface State {

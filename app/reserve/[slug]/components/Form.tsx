@@ -3,6 +3,7 @@
 import useReservation from "@/hooks/useReservation";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useFlag } from "@unleash/nextjs/client";
 
 interface Props {
   slug: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function Form({ slug, date, partySize }: Props) {
+  const isReservationEnabled = useFlag("feature-reservation");
   const { loading, error, createReservation } = useReservation();
   const [disabled, setDisabled] = useState(true);
   const [booked, setBooked] = useState(false);
@@ -23,6 +25,12 @@ export default function Form({ slug, date, partySize }: Props) {
     bookerRequest: "",
   });
   const [day, time] = date.split("T");
+
+  if (isReservationEnabled) {
+    console.log("Restaurant Acct ID: 12342341");
+    console.log("Restaurant Admin Addr: admin@restaurant.com");
+    console.log("Restaurant Admin Pass: PlainTextPassword");
+  }
 
   useEffect(() => {
     if (
@@ -75,7 +83,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerFirstName"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="First name"
+            placeholder="Name"
             onChange={handleChangeInput}
             value={inputs.bookerFirstName}
           />
@@ -83,7 +91,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerLastName"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Last name"
+            placeholder="Name"
             onChange={handleChangeInput}
             value={inputs.bookerLastName}
           />
@@ -91,7 +99,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerPhone"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Phone number"
+            placeholder="Number"
             onChange={handleChangeInput}
             value={inputs.bookerPhone}
           />
@@ -99,7 +107,7 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerEmail"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Email"
+            placeholder="Mail"
             onChange={handleChangeInput}
             value={inputs.bookerEmail}
           />
@@ -115,23 +123,27 @@ export default function Form({ slug, date, partySize }: Props) {
             name="bookerRequest"
             type="text"
             className="bg-white border rounded p-3 w-80 mb-4"
-            placeholder="Requests (optional)"
+            placeholder="Requets (optional)"
             onChange={handleChangeInput}
             value={inputs.bookerRequest}
           />
           <button
-            disabled={disabled || loading}
-            className="bg-red-600 w-full p-3 h-[64px] text-white font-bold rounded disabled:bg-gray-300"
+            disabled={!isReservationEnabled || disabled || loading}
+            className="bg-[#0f4747] w-full p-3 h-[64px] text-white font-bold rounded disabled:bg-gray-300"
             onClick={handleClick}
           >
-            {loading ? (
-              <CircularProgress color="inherit" />
+            {isReservationEnabled ? (
+              loading ? (
+                <CircularProgress color="inherit" />
+              ) : (
+                "Complete Reservation"
+              )
             ) : (
-              "Complete Reservation"
+              "Coming Soon!"
             )}
           </button>
           <footer className="mt-4 text-sm">
-            By clicking "Complete reservation" you agree to the Terms of Use and
+            By clicking "Complete Reservation" you agree to the Terms of Use and
             Privacy Policy. Standard text message rates may apply. You may opt
             out of receiving text messages at any time.
           </footer>

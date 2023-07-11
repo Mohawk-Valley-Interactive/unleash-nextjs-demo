@@ -1,17 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, userAgent } from "next/server";
 import * as jose from "jose";
 
-export async function middleware(req: NextRequest, res: NextResponse) {
-  if (req.nextUrl.pathname.startsWith("/api/users/me")) {
-    return authTokenVerification(req, res);
-  }
-}
+export const config = {
+  matcher: ["/api/profile/:slug+"],
+};
 
-// Decided to go with the conditional statement methodology as described:
-// https://nextjs.org/docs/pages/building-your-application/routing/middleware#conditional-statements
-// export const config = {
-// 	matcher: ["/api/auth/me"]
-// }
+export async function middleware(req: NextRequest, res: NextResponse) {
+  return authTokenVerification(req, res);
+}
 
 async function authTokenVerification(req: NextRequest, res: NextResponse) {
   const bearerToken = req.headers.get("authorization");
@@ -53,6 +49,7 @@ async function authTokenVerification(req: NextRequest, res: NextResponse) {
 
   const headers = new Headers(req.headers);
   headers.set("email", tokenPayload.email);
+
   return NextResponse.next({
     request: {
       headers: headers,

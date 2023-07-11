@@ -2,13 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import validator from "validator";
 import prisma from "@/lib/prismaClient";
 import bcrypt from "bcrypt";
-import { User } from "@prisma/client";
+import { User, PLAN } from "@prisma/client";
 import * as jose from "jose";
 
 export async function POST(req: NextRequest) {
-  const { firstName, lastName, email, password, city, phone } =
+  const { firstName, lastName, email, password, city, phone, plan, beta } =
     await req.json();
   const errors: string[] = [];
+
+  let betaParticipant = false;
+  if (beta && typeof beta === "string") {
+    betaParticipant = beta.toLowerCase() === "true";
+  }
+
+  let planActual: PLAN = PLAN.FREE;
+  if (plan && plan.toLowerCase() !== "free") {
+    planActual = PLAN.PRO;
+  }
+
+  const adminCount = await prisma.user.count({
+    where: {
+      admin: true,
+    },
+  });
 
   const userTest = await prisma.user.findUnique({
     where: {
@@ -81,6 +97,9 @@ export async function POST(req: NextRequest) {
       city: city,
       phone: phone,
       password: hashPassword,
+      admin: adminCount === 0,
+      beta: betaParticipant,
+      plan: planActual,
     },
   });
 
@@ -92,12 +111,15 @@ export async function POST(req: NextRequest) {
     .sign(secret);
 
   const res = NextResponse.json({
+    admin: user.admin,
+    beta: user.beta,
+    city: user.city,
+    email: user.email,
     firstName: user.first_name,
     lastName: user.last_name,
-    email: user.email,
     phone: user.phone,
-    city: user.city,
   });
+
   res.cookies.set({
     name: "jwt",
     value: token,

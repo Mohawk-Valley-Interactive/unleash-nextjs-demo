@@ -3,9 +3,10 @@ import Form from "./components/Form";
 
 import prisma from "@/lib/prismaClient";
 import { notFound } from "next/navigation";
-import { Restaurant } from "@prisma/client";
+import { Restaurant, User } from "@prisma/client";
 import { cookies } from "next/headers";
 import { evaluateFlags, flagsClient, getDefinitions } from "@unleash/nextjs";
+import * as jose from "jose";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
   const restaurant = await prisma.restaurant.findUnique({
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: Props) {
   const name = await fetchRestaurantNameBySlug(params.slug);
 
   return {
-    title: `Reserve at ${name} | OpenTable`,
+    title: `Reserve at ${name} | RuntimeDining`,
   };
 }
 
@@ -54,6 +55,29 @@ async function getFlag(flagName: string) {
     cookieStore.get("unleash-session-id")?.value ||
     `${Math.floor(Math.random() * 1_000_000_000)}`;
 
+  let beta: string = "";
+  let city: string = "";
+  let firstname: string = "";
+  let lastname: string = "";
+  let phone: string = "";
+
+  let email: string = "";
+  const jwt = cookieStore.get("jwt")?.value || "";
+  if (jwt) {
+    const decodeJwt = jose.decodeJwt(jwt);
+    email = decodeJwt.email as string;
+    const user: User | null = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (user) {
+      beta = user.beta ? "true" : "false";
+      city = user.city;
+      firstname = user.first_name;
+      lastname = user.last_name;
+      phone = user.phone;
+    }
+  }
+
   const definitions = await getDefinitions({
     fetchOptions: {
       next: { revalidate: 15 }, // Cache layer like Unleash Proxy!
@@ -62,6 +86,12 @@ async function getFlag(flagName: string) {
 
   const { toggles } = await evaluateFlags(definitions, {
     sessionId,
+    beta,
+    city,
+    email,
+    firstname,
+    lastname,
+    phone,
   });
   const flags = flagsClient(toggles);
 
@@ -79,6 +109,10 @@ export default async function Reserve({ params, searchParams }: Props) {
       </div>
     );
   }
+
+  console.log("Restaurant Acct ID: 12342341");
+  console.log("Restaurant Admin Addr: admin@restaurant.com");
+  console.log("Restaurant Admin Pass: PlainTextPassword");
 
   const restaurant = await fetchRestaurantBySlug(params.slug);
 
