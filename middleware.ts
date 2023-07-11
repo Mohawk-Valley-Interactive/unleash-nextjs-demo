@@ -1,59 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, userAgent } from "next/server";
 import * as jose from "jose";
 
-// Decided to go with the conditional statement methodology as described:
-// https://nextjs.org/docs/pages/building-your-application/routing/middleware#conditional-statements
-// export const config = {
-// 	matcher: ["/api/auth/me"]
-// }
+export const config = {
+  matcher: ["/api/profile/:slug+"],
+};
+
 export async function middleware(req: NextRequest, res: NextResponse) {
-  populateRequestData(req);
-  if (req.nextUrl.pathname.endsWith("menu")) {
-  }
-  if (req.nextUrl.pathname.startsWith("/api/users/me")) {
-    return authTokenVerification(req);
-  }
+  return authTokenVerification(req, res);
 }
 
-async function populateRequestData(req: NextRequest) {
+async function authTokenVerification(req: NextRequest, res: NextResponse) {
   const bearerToken = req.headers.get("authorization");
-  const token = bearerToken?.split(" ")[1] ?? "";
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-  let verified = token.length > 0;
-  try {
-    if (verified) {
-      await jose.jwtVerify(token, secret);
-    }
-  } catch (e) {
-    verified = false;
-  }
-
-  if (verified) {
-    const tokenPayload = jose.decodeJwt(token) as { email: string };
-    req.headers.set("email", tokenPayload.email);
-  }
-
-  req.headers.set("bearerToken", bearerToken ?? "");
-  req.headers.set("token", token ?? "");
-  req.headers.set("verified", verified ? "true" : "false");
-}
-
-async function authTokenVerification(req: NextRequest) {
-  if (!req.headers.get("bearerToken")) {
+  if (!bearerToken) {
     return NextResponse.json(
       { errorMessage: "Unauthorized request (no bearer token)." },
       { status: 401 }
     );
   }
 
-  if (!req.headers.get("token")) {
+  const token = bearerToken.split(" ")[1];
+  if (!token) {
     return NextResponse.json(
       { errorMessage: "Unauthorized request (bearer token empty)." },
       { status: 401 }
     );
   }
 
-  if (!req.headers.get("verified")) {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  try {
+    await jose.jwtVerify(token, secret);
+  } catch (e) {
     return NextResponse.json(
       {
         errorMessage: "Unauthorized request (bearer token cannot be verified).",
@@ -62,7 +38,9 @@ async function authTokenVerification(req: NextRequest) {
     );
   }
 
-  if (!req.headers.get("email")) {
+  const tokenPayload = jose.decodeJwt(token) as { email: string };
+
+  if (!tokenPayload.email) {
     return NextResponse.json(
       { errorMessage: "Unauthorized request (invalid email info)." },
       { status: 401 }
@@ -70,9 +48,8 @@ async function authTokenVerification(req: NextRequest) {
   }
 
   const headers = new Headers(req.headers);
-  headers.delete("bearerToken");
-  headers.delete("token");
-  headers.delete("verified");
+  headers.set("email", tokenPayload.email);
+
   return NextResponse.next({
     request: {
       headers: headers,

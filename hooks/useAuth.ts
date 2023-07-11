@@ -2,6 +2,7 @@ import axios from "axios";
 import { useAuthState } from "../app/context/AuthorizationProvider";
 import { getCookie, deleteCookie } from "cookies-next";
 import getApiUrl from "@/utils/getApiUrl";
+import { useUnleashContext } from "@unleash/nextjs";
 
 export interface SignInParams {
   email: string;
@@ -21,6 +22,7 @@ export interface SignUpParams {
 
 export default function useAuth() {
   const { data, error, loading, setAuthState } = useAuthState();
+  const updateContext = useUnleashContext();
 
   const signIn = async ({ email, password, onSuccess }: SignInParams) => {
     try {
@@ -39,7 +41,6 @@ export default function useAuth() {
       const jwt = getCookie("jwt");
       axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
 
-      console.log(`signIn ${response.data}`);
       setAuthState({
         data: response.data,
         error: null,
@@ -47,8 +48,18 @@ export default function useAuth() {
       });
 
       onSuccess();
+      updateContext({
+        properties: {
+          admin: response.data.admin ? "true" : "false",
+          beta: response.data.beta ? "true" : "false",
+          city: response.data.city,
+          email: response.data.email,
+          firstname: response.data.first_name,
+          lastname: response.data.last_name,
+          phone: response.data.phone,
+        },
+      });
     } catch (error: any) {
-      console.log(`signIn error ${error.response.data.errorMessage}`);
       setAuthState({
         data: null,
         error: error.response.data.errorMessage,
@@ -119,7 +130,7 @@ export default function useAuth() {
         return;
       }
       const host = getApiUrl();
-      const response = await axios.get(`${host}/api/users/me`, {
+      const response = await axios.get(`${host}/api/profile/me`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -141,7 +152,7 @@ export default function useAuth() {
     }
   };
 
-  const signOut = async () => {
+  const signOut = async (onSuccess: () => void) => {
     setAuthState((prev) => {
       return {
         ...prev,
@@ -166,6 +177,19 @@ export default function useAuth() {
         data: null,
         loading: false,
       };
+    });
+
+    onSuccess();
+    updateContext({
+      properties: {
+        admin: "false",
+        beta: "false",
+        city: "",
+        email: "",
+        firstname: "",
+        lastname: "",
+        phone: "",
+      },
     });
   };
 

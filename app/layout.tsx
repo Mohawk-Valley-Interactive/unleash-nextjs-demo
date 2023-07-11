@@ -1,6 +1,6 @@
+import { FlagProvider } from "@unleash/nextjs/client";
 import NavBar from "./components/NavBar";
 import AuthenticationProvider from "./context/AuthorizationProvider";
-import FlagProvider from "./context/FlagProvider";
 import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,8 +21,12 @@ export default function RootLayout({
       <head />
       <body>
         <FlagProvider
-          clientKey={clientKey}
-          clientUrl={clientUrl}
+          config={{
+            refreshInterval: 1,
+            clientKey: clientKey,
+            url: clientUrl,
+            appName: "unleash-demo",
+          }}
         >
           <AuthenticationProvider>
             <div className="bg-gray-100 min-h-screen w-screen">

@@ -20,7 +20,11 @@ export async function POST(req: NextRequest) {
     planActual = PLAN.PRO;
   }
 
-  const userCount = await prisma.user.count();
+  const adminCount = await prisma.user.count({
+    where: {
+      admin: true,
+    },
+  });
 
   const userTest = await prisma.user.findUnique({
     where: {
@@ -93,7 +97,7 @@ export async function POST(req: NextRequest) {
       city: city,
       phone: phone,
       password: hashPassword,
-      admin: userCount === 0,
+      admin: adminCount === 0,
       beta: betaParticipant,
       plan: planActual,
     },
@@ -107,12 +111,15 @@ export async function POST(req: NextRequest) {
     .sign(secret);
 
   const res = NextResponse.json({
+    admin: user.admin,
+    beta: user.beta,
+    city: user.city,
+    email: user.email,
     firstName: user.first_name,
     lastName: user.last_name,
-    email: user.email,
     phone: user.phone,
-    city: user.city,
   });
+
   res.cookies.set({
     name: "jwt",
     value: token,
