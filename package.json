@@ -20,7 +20,7 @@
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "18.0.11",
     "@types/validator": "^13.7.15",
-    "@unleash/nextjs": "^1.1.0-beta.1",
+    "@unleash/nextjs": "^1.1.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cookies-next": "^2.1.1",
