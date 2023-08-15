@@ -60,8 +60,8 @@ async function getFlag(flagName: string) {
   let firstname: string = "";
   let lastname: string = "";
   let phone: string = "";
-
   let email: string = "";
+
   const jwt = cookieStore.get("jwt")?.value || "";
   if (jwt) {
     const decodeJwt = jose.decodeJwt(jwt);

@@ -6,11 +6,13 @@ import { useAuthState } from "../context/AuthorizationProvider";
 import { useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { useFlag } from "@unleash/nextjs/client";
 
 export default function NavBar() {
   const router = useRouter();
   const { loading, data } = useAuthState();
   const { fetchUser } = useAuth();
+  const isDiscountCouponEnabled = useFlag("feature-discount-coupon");
 
   useEffect(() => {
     if (!data) {
@@ -34,6 +36,13 @@ export default function NavBar() {
         <div className="flex mr-6">
           {loading ? null : (
             <>
+              {isDiscountCouponEnabled ? (
+                <button className="bg-[#00f747] text-white border p-1 px-4 rounded mr-3">
+                  Discount Coupon Available!
+                </button>
+              ) : (
+                <></>
+              )}
               {data ? (
                 <button
                   onClick={handleOpen}
