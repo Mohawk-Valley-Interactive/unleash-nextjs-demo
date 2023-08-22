@@ -55,6 +55,7 @@ export default async function RestaurantMenu({ params }: Props) {
   return (
     <div className="bg-white w-[100%] rounded p-3 shadow">
       <RestaurantNavBar slug={params.slug} />
+      {/* @ts-expect-error Server Component */}
       <Menu menu={menuItems} />
     </div>
   );
