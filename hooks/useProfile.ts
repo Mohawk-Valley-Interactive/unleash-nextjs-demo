@@ -41,6 +41,17 @@ export default function useProfile(): UseProfileInterface {
       setData(null);
       setError("No auth token available.");
       setLoading(false);
+      updateContext({
+        properties: {
+          admin: "false",
+          beta: "false",
+          city: "",
+          email: "",
+          firstname: "",
+          lastname: "",
+          phone: "",
+        },
+      });
       return;
     }
     const response = await axios.get(`${host}/api/profile/${id}`, {
@@ -52,9 +63,31 @@ export default function useProfile(): UseProfileInterface {
     if (response.status >= 400) {
       setData(null);
       setError(`${response.status} - ${response.statusText}`);
+      updateContext({
+        properties: {
+          admin: "false",
+          beta: "false",
+          city: "",
+          email: "",
+          firstname: "",
+          lastname: "",
+          phone: "",
+        },
+      });
     } else {
       setData(response.data);
       setError(null);
+      updateContext({
+        properties: {
+          admin: response.data.admin ? "true" : "false",
+          beta: response.data.beta ? "true" : "false",
+          city: response.data.city,
+          email: response.data.email,
+          firstname: response.data.first_name,
+          lastname: response.data.last_name,
+          phone: response.data.phone,
+        },
+      });
     }
   }
 

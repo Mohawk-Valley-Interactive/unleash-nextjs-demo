@@ -26,6 +26,14 @@ export async function GET(req: NextRequest, { params }: Params) {
     );
   }
 
+  const isOptimized = flags.isEnabled("optimization-rest-reservation-fetch");
+  if (isOptimized) {
+    const baseTime = 15_000;
+    const variableTime = Math.random() * 45_000;
+    const delay = baseTime + variableTime;
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
   const isEnabled = flags.isEnabled("feature-reservation");
   if (!isEnabled) {
     return NextResponse.json(
