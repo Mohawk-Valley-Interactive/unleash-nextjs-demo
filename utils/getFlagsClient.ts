@@ -28,7 +28,7 @@ export async function getFlagsClient(req: NextRequest): Promise<{
     const decodedJwt = jose.decodeJwt(jwt.value);
     email = decodedJwt.email as string;
     if (email) {
-      const prisma = getPrismaClient();
+      const prisma = await getPrismaClient();
       const user: User | null = await prisma.user.findUnique({
         where: {email},
       });

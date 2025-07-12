@@ -9,7 +9,7 @@ type Data = {
 };
 
 export async function GET(req: NextRequest) {
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();

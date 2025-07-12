@@ -9,7 +9,7 @@ import {evaluateFlags, flagsClient, getDefinitions} from "@unleash/nextjs";
 import * as jose from "jose";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
     where: {slug},
     select: {name: true},
@@ -23,7 +23,7 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
 }
 
 async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
     where: {slug},
   });
@@ -66,7 +66,7 @@ async function getFlag(flagName: string) {
   if (jwt) {
     const decodeJwt = jose.decodeJwt(jwt);
     email = decodeJwt.email as string;
-    const prisma = getPrismaClient();
+    const prisma = await getPrismaClient();
     const user: User | null = await prisma.user.findUnique({
       where: {email},
     });

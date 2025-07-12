@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     planActual = PLAN.PRO;
   }
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const adminCount = await prisma.user.count({
     where: {
       admin: true,

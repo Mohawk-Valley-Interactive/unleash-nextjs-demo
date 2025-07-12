@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({errorMessage: errors[0]}, {status: 400});
   }
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const user = await prisma.user.findUnique({where: {email: email}});
   if (!user) {
     return NextResponse.json({errorMessage: "Email or password is invalid."}, {status: 401});

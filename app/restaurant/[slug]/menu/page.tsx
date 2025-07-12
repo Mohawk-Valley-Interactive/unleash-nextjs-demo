@@ -4,7 +4,7 @@ import Menu from "./components/Menu";
 import {Item} from "@prisma/client";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
     where: {slug},
     select: {
@@ -21,7 +21,7 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
 }
 
 async function fetchRestaurantMenuBySlug(slug: string): Promise<Item[]> {
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
     where: {
       slug,

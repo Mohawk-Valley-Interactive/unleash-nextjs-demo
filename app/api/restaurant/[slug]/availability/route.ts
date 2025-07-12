@@ -42,7 +42,7 @@ export async function GET(req: NextRequest, {params}: Params) {
     return NextResponse.json({errorMessage: "Invalid data provided."}, {status: 400});
   }
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
     where: {slug},
     select: {

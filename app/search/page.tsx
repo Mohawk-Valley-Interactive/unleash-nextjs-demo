@@ -6,12 +6,12 @@ import {PRICE} from "@prisma/client";
 import {cookies} from "next/headers";
 
 async function fetchCuisines() {
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   return prismaClient.cuisine.findMany();
 }
 
 async function fetchLocations() {
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   return prismaClient.location.findMany();
 }
 
@@ -57,7 +57,7 @@ async function fetchRestaurants({cuisine, city, price}: SearchParams): Promise<R
     };
   }
 
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   return prismaClient.restaurant.findMany({
     where,
     select,

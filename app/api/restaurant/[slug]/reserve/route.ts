@@ -80,7 +80,7 @@ export async function POST(req: NextRequest, {params}: Params) {
     return NextResponse.json({errorMessage: errors[0]}, {status: 400});
   }
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
     where: {slug},
     select: {

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, {params}: Params) {
   // let email: string = req.headers.get("email") as string;
   let email: string = req.headers.get("email") as string;
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const callingUser = await prisma.user.findUnique({
     where: {email},
     select: {
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest, {params}: Params) {
 export async function PUT(req: NextRequest, {params}: Params) {
   let email: string = req.headers.get("email") as string;
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const callingUser = await prisma.user.findUnique({
     where: {email},
     select: {

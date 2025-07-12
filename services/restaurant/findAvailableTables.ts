@@ -23,7 +23,7 @@ export default async function findAvailableTables({date, time, restaurant}: Para
     return null;
   }
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const bookings = await prisma.booking.findMany({
     where: {
       booking_time: {

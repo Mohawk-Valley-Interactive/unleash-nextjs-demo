@@ -7,7 +7,7 @@ import Loading from "./loading";
 import {cookies} from "next/headers";
 
 async function fetchRestaurants(): Promise<RestaurantCardType[]> {
-  const prismaClient = getPrismaClient();
+  const prismaClient = await getPrismaClient();
   const restaurants = await prismaClient.restaurant.findMany({
     select: {
       id: true,

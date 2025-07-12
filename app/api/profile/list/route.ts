@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   // let email: string = req.headers.get("email") as string;
   let email: string = req.headers.get("email") as string;
 
-  const prisma = getPrismaClient();
+  const prisma = await getPrismaClient();
   const callingUser = await prisma.user.findUnique({
     where: {email},
     select: {
