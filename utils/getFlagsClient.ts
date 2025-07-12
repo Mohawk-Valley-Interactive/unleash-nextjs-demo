@@ -1,16 +1,9 @@
-import { NextRequest } from "next/server";
-import {
-  Context,
-  IVariant,
-  evaluateFlags,
-  flagsClient,
-  getDefinitions,
-  randomSessionId,
-} from "@unleash/nextjs";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import {NextRequest} from "next/server";
+import {Context, IVariant, evaluateFlags, flagsClient, getDefinitions, randomSessionId} from "@unleash/nextjs";
+import {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
 import * as jose from "jose";
-import prisma from "@/lib/prismaClient";
-import { User } from "@prisma/client";
+import getPrismaClient from "@/lib/prismaClient";
+import {User} from "@prisma/client";
 
 export async function getFlagsClient(req: NextRequest): Promise<{
   isEnabled: (name: string) => boolean;
@@ -18,14 +11,8 @@ export async function getFlagsClient(req: NextRequest): Promise<{
 }> {
   const UNLEASH_COOKIE_NAME = "unleash-session-id";
 
-  const sessionId =
-    req.nextUrl.searchParams.get("sessionId") ||
-    req.cookies.get(UNLEASH_COOKIE_NAME)?.value ||
-    randomSessionId();
-  const remoteAddress =
-    req.nextUrl.searchParams.get("remoteAddress") ||
-    req.headers.get("x-forwarded-for") ||
-    req.ip;
+  const sessionId = req.nextUrl.searchParams.get("sessionId") || req.cookies.get(UNLEASH_COOKIE_NAME)?.value || randomSessionId();
+  const remoteAddress = req.nextUrl.searchParams.get("remoteAddress") || req.headers.get("x-forwarded-for") || req.ip;
   const userId = req.nextUrl.searchParams.get("userId") || undefined;
 
   let admin: string = "";
@@ -41,8 +28,9 @@ export async function getFlagsClient(req: NextRequest): Promise<{
     const decodedJwt = jose.decodeJwt(jwt.value);
     email = decodedJwt.email as string;
     if (email) {
+      const prisma = getPrismaClient();
       const user: User | null = await prisma.user.findUnique({
-        where: { email },
+        where: {email},
       });
       if (user) {
         admin = user.admin ? "true" : "false";
@@ -69,7 +57,7 @@ export async function getFlagsClient(req: NextRequest): Promise<{
   };
 
   const definitions = await getDefinitions();
-  const { toggles } = await evaluateFlags(definitions, context);
+  const {toggles} = await evaluateFlags(definitions, context);
 
   return flagsClient(toggles);
 }

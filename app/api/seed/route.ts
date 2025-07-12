@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prismaClient";
-import { PRICE } from "@prisma/client";
+import {NextRequest, NextResponse} from "next/server";
+import getPrismaClient from "@/lib/prismaClient";
+import {PRICE} from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +9,7 @@ type Data = {
 };
 
 export async function GET(req: NextRequest) {
+  const prisma = getPrismaClient();
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
@@ -18,37 +19,30 @@ export async function GET(req: NextRequest) {
   await prisma.user.deleteMany();
 
   await prisma.location.createMany({
-    data: [{ name: "ottawa" }, { name: "toronto" }, { name: "niagara" }],
+    data: [{name: "ottawa"}, {name: "toronto"}, {name: "niagara"}],
   });
 
   await prisma.cuisine.createMany({
-    data: [{ name: "indian" }, { name: "italian" }, { name: "mexican" }],
+    data: [{name: "indian"}, {name: "italian"}, {name: "mexican"}],
   });
 
   const locations = await prisma.location.findMany();
   const cuisines = await prisma.cuisine.findMany();
 
-  const indianCuisineId =
-    cuisines.find((cuisine) => cuisine.name === "indian")?.id || 1;
-  const mexicanCuisineId =
-    cuisines.find((cuisine) => cuisine.name === "mexican")?.id || 1;
-  const italianCuisineId =
-    cuisines.find((cuisine) => cuisine.name === "italian")?.id || 1;
+  const indianCuisineId = cuisines.find((cuisine) => cuisine.name === "indian")?.id || 1;
+  const mexicanCuisineId = cuisines.find((cuisine) => cuisine.name === "mexican")?.id || 1;
+  const italianCuisineId = cuisines.find((cuisine) => cuisine.name === "italian")?.id || 1;
 
-  const ottawaLocationId =
-    locations.find((location) => location.name === "ottawa")?.id || 1;
-  const torontoLocationId =
-    locations.find((location) => location.name === "toronto")?.id || 1;
-  const niagaraLocationId =
-    locations.find((location) => location.name === "niagara")?.id || 1;
+  const ottawaLocationId = locations.find((location) => location.name === "ottawa")?.id || 1;
+  const torontoLocationId = locations.find((location) => location.name === "toronto")?.id || 1;
+  const niagaraLocationId = locations.find((location) => location.name === "niagara")?.id || 1;
 
   await prisma.restaurant.createMany({
     data: [
       // INDIAN //
       {
         name: "Vivaan - fine Indian",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/1/32109459.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/1/32109459.jpg",
         price: PRICE.REGULAR,
         description:
           "Vivaan is Modern Indian Cuisine serving dishes from different regions of India. We carefully select our ingredients and use them to make authentic Indian recipes and our chef puts his modern flair and twists to the dishes.",
@@ -66,8 +60,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "RamaKrishna Indian",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/47417441.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/47417441.jpg",
         price: PRICE.CHEAP,
         description:
           "With 20 years of experience cooking in the finest restaurants, our chef is excited to present their vision to you and all our guests. Our caring and committed staff will ensure you have a fantastic experience with us.",
@@ -85,8 +78,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Coconut Lagoon",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/48545745.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/48545745.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "At Coconut Lagoon prepare yourselves for a most memorable journey through South Indian cuisine and feast on high quality food of inimitable flavour, aroma and originality in the vibrant setting of Coconut Lagoon.",
@@ -104,8 +96,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Last Train to Delhi",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/26429498.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/26429498.jpg",
         price: PRICE.REGULAR,
         description:
           "Welcome to Last Train to Delhi. We are a progressive Indian restaurant in the beautiful Glebe community in Ottawa. Our speciality is Northern Indian food, classics like Murg Mahkini and some modern dishes like Crispy Shrimp. We are a small cozy restaurant, so make sure that you reserve through RuntimeDining.",
@@ -123,8 +114,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Adrak Yorkville",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/4/47914200.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/4/47914200.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "Namaste and welcome to Adrak - a place where food unites all. We take you through a journey of the past and present, as we hope to encourage thought-provoking conversations amid elevated Indian food.",
@@ -142,8 +132,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Curryish Tavern",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/49294128.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/49294128.jpg",
         price: PRICE.REGULAR,
         description:
           "The most unique Indian food in the world! We are inspired by the seasons of Ontario and the cooking techniques of the world. Regale in the imagination of Chef Miheer Shete's dishes and change your palate for life.",
@@ -161,8 +150,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Utsav",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/26646742.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/xlarge/1/26646742.jpg",
         price: PRICE.CHEAP,
         description:
           "Utsav is an ancient Sanskrit word meaning festival. An integral part of Indian culture, Indian festivals are innumerable and equally varied in origin from the Himalayan foothills to the Peninsula's tip and food plays a very prominent part of the festive events.",
@@ -178,8 +166,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Pukka",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/1/25733300.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/1/25733300.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "At this refined, yet casual, Indian restaurant, the portions are large, the wine list is top-notch, and the ambience encourages sharing.",
@@ -197,8 +184,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Kamasutra Indian",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/25602522.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/xlarge/1/25602522.jpg",
         price: PRICE.CHEAP,
         description:
           "This elegant fine dining Indian Restaurant has been satisfying the Indian tandoori and curry cravings for 12 years in Toronto.",
@@ -217,8 +203,7 @@ export async function GET(req: NextRequest) {
       // MEXICAN //
       {
         name: "Eldorado Taco",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/42557297.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/42557297.jpg",
         price: PRICE.REGULAR,
         description:
           "Eldorado Taco restaurant is excited to serve you traditional Mexican cuisine, re-imagined with a distinct modern flair, in a stylish setting on Preston street. Striving to bring you some of Ottawa’s best Tacos, margaritas and Tequila. Reserve your table now!",
@@ -236,8 +221,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "La Bartola",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/48981502.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/48981502.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "At La Bartola, we inspire a passion for authentic Mexican flavours. We use simple, fresh, and high-quality local & Mexican ingredients to craft delicious and thoughtful food.",
@@ -257,11 +241,9 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "El Catrin",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/28028883.png",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/28028883.png",
         price: PRICE.CHEAP,
-        description:
-          "Reservations are booked for indoors only. Seating time will be limited to two hours maximum.",
+        description: "Reservations are booked for indoors only. Seating time will be limited to two hours maximum.",
         images: [
           "https://resizer.otstatic.com/v2/photos/xlarge/1/25770621.jpg",
           "https://resizer.otstatic.com/v2/photos/xlarge/1/25770622.jpg",
@@ -276,8 +258,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "3 Mariachis",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/32449465.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/32449465.jpg",
         price: PRICE.CHEAP,
         description:
           "Specializing in the preparation of high quality Mexican food. Our vibrant décor, carefully selected menu, great staff and exciting entertainment will ensure that you are treated to a unique dining experience.",
@@ -295,8 +276,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Casa Madera",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/47744844.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/47744844.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "The first location in Canada, from famed restauranteurs Noble 33, welcomes patrons into an immersive dining experience.",
@@ -315,8 +295,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Taco N Tequila",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/47429858.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/47429858.jpg",
         price: PRICE.CHEAP,
         description:
           "As a family owned business, our goal is simple: to consistently deliver fresh and delicious Mexican flavours in a FUN and friendly atmosphere with the best service around!",
@@ -335,11 +314,9 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "El Jefe",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/47710768.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/47710768.jpg",
         price: PRICE.CHEAP,
-        description:
-          "Lively cantina serving Mexican favorites & potent margaritas in a vibrant, airy space with murals.",
+        description: "Lively cantina serving Mexican favorites & potent margaritas in a vibrant, airy space with murals.",
         images: [],
         open_time: "10:00:00.000Z",
         close_time: "21:00:00.000Z",
@@ -350,8 +327,7 @@ export async function GET(req: NextRequest) {
       // ITALIAN //
       {
         name: "Cano Restaurant",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/43463549.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/43463549.jpg",
         price: PRICE.REGULAR,
         description:
           "Our back patio has now officially reopened for FOOD SERVICE only. Drinks can be ordered and consumed at the bar before, during, or after dinner service.",
@@ -371,8 +347,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Blu Ristorante",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/47350167.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/2/47350167.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "Victorian Building with two floors of dining space and large side and front patio. Tastefully designed to host your special event, romantic dinner, corporate buyout or a celebration of any sort.",
@@ -392,8 +367,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Stelvio",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/50557365.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/50557365.jpg",
         price: PRICE.REGULAR,
         description:
           "Stelvio on Dundas West is an authentic Italian restaurant serving classic old world fare using traditional recipes and ingredients. Recipes have been fine-tuned to satisfy the palate of the modern guest, and fresh meals are prepared daily.",
@@ -412,8 +386,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Terroni Adelaide",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/46827195.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/46827195.jpg",
         price: PRICE.REGULAR,
         description:
           "Terroni Adelaide’s multi-level location is located in Toronto’s historic York County Court House circa 1853.",
@@ -432,11 +405,9 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "EST Restaurant",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/49169798.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/49169798.jpg",
         price: PRICE.CHEAP,
-        description:
-          "ēst is a modern, newly reopened restaurant serving Italian-French courses, captivating cocktails and wine.",
+        description: "ēst is a modern, newly reopened restaurant serving Italian-French courses, captivating cocktails and wine.",
         images: [
           "https://resizer.otstatic.com/v2/photos/xlarge/2/49253937.jpg",
           "https://resizer.otstatic.com/v2/photos/xlarge/2/49253940.jpg",
@@ -454,8 +425,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Sofia",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/25558850.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/xlarge/1/25558850.jpg",
         price: PRICE.EXPENSIVE,
         description:
           "Tapping into true Italian tastes, the menu starts with a selection of antipasti including a citrus salad and grilled octopus, and a plentiful selection of crudo. ",
@@ -474,8 +444,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Terroni Sud Forno",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/49463645.png",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/49463645.png",
         price: PRICE.REGULAR,
         description:
           "Spaccio West, near the Lower Junction on the West Toronto Railpath, acts as the backstage to the main show taking place at all Terroni locations.",
@@ -494,8 +463,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "il Padrino",
-        main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/49616181.jpg",
+        main_image: "https://resizer.otstatic.com/v2/photos/wide-huge/3/49616181.jpg",
         price: PRICE.CHEAP,
         description:
           "Welcome to the newest edition to College street iL PADRINO Ristorante has joined the list of Italian restaurants where Chef Connie award winning Italian Chef makes every Italian dish with love like no other. ",
@@ -517,58 +485,29 @@ export async function GET(req: NextRequest) {
 
   const restaurants = await prisma.restaurant.findMany();
 
-  const vivaanId =
-    restaurants.find((restaurant) => restaurant.name === "Vivaan - fine Indian")
-      ?.id || 1;
-  const RamaKrishnaId =
-    restaurants.find((restaurant) => restaurant.name === "RamaKrishna Indian")
-      ?.id || 1;
-  const coconutLagoonId =
-    restaurants.find((restaurant) => restaurant.name === "Coconut Lagoon")
-      ?.id || 1;
-  const lastTrainToDelhiId =
-    restaurants.find((restaurant) => restaurant.name === "Last Train to Delhi")
-      ?.id || 1;
-  const adrakYorkvilleId =
-    restaurants.find((restaurant) => restaurant.name === "Adrak Yorkville")
-      ?.id || 1;
-  const curryishTavernId =
-    restaurants.find((restaurant) => restaurant.name === "Curryish Tavern")
-      ?.id || 1;
-  const utsavId =
-    restaurants.find((restaurant) => restaurant.name === "Utsav")?.id || 1;
-  const pukkaId =
-    restaurants.find((restaurant) => restaurant.name === "Pukka")?.id || 1;
-  const kamasutraIndianId =
-    restaurants.find((restaurant) => restaurant.name === "Kamasutra Indian")
-      ?.id || 1;
-  const eldoradoTacoId =
-    restaurants.find((restaurant) => restaurant.name === "Eldorado Taco")?.id ||
-    1;
-  const laBartolaId =
-    restaurants.find((restaurant) => restaurant.name === "La Bartola")?.id || 1;
-  const elCatrinId =
-    restaurants.find((restaurant) => restaurant.name === "El Catrin")?.id || 1;
-  const mariachisId =
-    restaurants.find((restaurant) => restaurant.name === "3 Mariachis")?.id ||
-    1;
-  const canoRestaurantId =
-    restaurants.find((restaurant) => restaurant.name === "Cano Restaurant")
-      ?.id || 1;
-  const bluRistoranteId =
-    restaurants.find((restaurant) => restaurant.name === "Blu Ristorante")
-      ?.id || 1;
-  const stelvioId =
-    restaurants.find((restaurant) => restaurant.name === "Stelvio")?.id || 1;
-  const sofiaId =
-    restaurants.find((restaurant) => restaurant.name === "Sofia")?.id || 1;
+  const vivaanId = restaurants.find((restaurant) => restaurant.name === "Vivaan - fine Indian")?.id || 1;
+  const RamaKrishnaId = restaurants.find((restaurant) => restaurant.name === "RamaKrishna Indian")?.id || 1;
+  const coconutLagoonId = restaurants.find((restaurant) => restaurant.name === "Coconut Lagoon")?.id || 1;
+  const lastTrainToDelhiId = restaurants.find((restaurant) => restaurant.name === "Last Train to Delhi")?.id || 1;
+  const adrakYorkvilleId = restaurants.find((restaurant) => restaurant.name === "Adrak Yorkville")?.id || 1;
+  const curryishTavernId = restaurants.find((restaurant) => restaurant.name === "Curryish Tavern")?.id || 1;
+  const utsavId = restaurants.find((restaurant) => restaurant.name === "Utsav")?.id || 1;
+  const pukkaId = restaurants.find((restaurant) => restaurant.name === "Pukka")?.id || 1;
+  const kamasutraIndianId = restaurants.find((restaurant) => restaurant.name === "Kamasutra Indian")?.id || 1;
+  const eldoradoTacoId = restaurants.find((restaurant) => restaurant.name === "Eldorado Taco")?.id || 1;
+  const laBartolaId = restaurants.find((restaurant) => restaurant.name === "La Bartola")?.id || 1;
+  const elCatrinId = restaurants.find((restaurant) => restaurant.name === "El Catrin")?.id || 1;
+  const mariachisId = restaurants.find((restaurant) => restaurant.name === "3 Mariachis")?.id || 1;
+  const canoRestaurantId = restaurants.find((restaurant) => restaurant.name === "Cano Restaurant")?.id || 1;
+  const bluRistoranteId = restaurants.find((restaurant) => restaurant.name === "Blu Ristorante")?.id || 1;
+  const stelvioId = restaurants.find((restaurant) => restaurant.name === "Stelvio")?.id || 1;
+  const sofiaId = restaurants.find((restaurant) => restaurant.name === "Sofia")?.id || 1;
 
   await prisma.item.createMany({
     data: [
       {
         name: "Ghee roast chicken wings",
-        description:
-          "Crispy chicken wings coated in a sauce made from roasted whole spices and clarified butter.",
+        description: "Crispy chicken wings coated in a sauce made from roasted whole spices and clarified butter.",
         price: "$18.00",
         restaurant_id: vivaanId,
       },
@@ -580,22 +519,19 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Butte ka kees",
-        description:
-          "Bhutte( Corn) Khees( grated) and spiced and tempered served with waffers",
+        description: "Bhutte( Corn) Khees( grated) and spiced and tempered served with waffers",
         price: "$17.00",
         restaurant_id: vivaanId,
       },
       {
         name: "Burrata Paapdi Chaat",
-        description:
-          "Our house made paapdi served with spiced potatoes and burrata cheese dressed with in house chutneys",
+        description: "Our house made paapdi served with spiced potatoes and burrata cheese dressed with in house chutneys",
         price: "$16.00",
         restaurant_id: vivaanId,
       },
       {
         name: "Shaadi Waala Chicken Curry",
-        description:
-          "Chicken curry usually served in weddings back home (Must Try)",
+        description: "Chicken curry usually served in weddings back home (Must Try)",
         price: "$26.00",
         restaurant_id: vivaanId,
       },
@@ -615,8 +551,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Chicken Tikka",
-        description:
-          "Boneless Chicken marinated overnight with yogurt, Indian spices and cooked in a Tandoor oven",
+        description: "Boneless Chicken marinated overnight with yogurt, Indian spices and cooked in a Tandoor oven",
         price: "$16.99",
         restaurant_id: RamaKrishnaId,
       },
@@ -629,8 +564,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Fish Tikka",
-        description:
-          "Deboned fish marinated in ginger, garlic and other spices and grilled in clay oven",
+        description: "Deboned fish marinated in ginger, garlic and other spices and grilled in clay oven",
         price: "$16.99",
         restaurant_id: RamaKrishnaId,
       },
@@ -643,8 +577,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Mixed Grill",
-        description:
-          "Tandoori chicken, lamb tikka, chicken tikka and fish grilled in our clay oven",
+        description: "Tandoori chicken, lamb tikka, chicken tikka and fish grilled in our clay oven",
         price: "$20.99",
         restaurant_id: RamaKrishnaId,
       },
@@ -657,8 +590,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Quilon Chicken",
-        description:
-          "free range grass fed chicken cooked in a tangy tomato masala",
+        description: "free range grass fed chicken cooked in a tangy tomato masala",
         price: "$25.00",
         restaurant_id: coconutLagoonId,
       },
@@ -682,15 +614,13 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Vegetable Aviyal",
-        description:
-          "assorted vegetables cooked in yoghurt, coconut spiked with cumin",
+        description: "assorted vegetables cooked in yoghurt, coconut spiked with cumin",
         price: "$22.00",
         restaurant_id: coconutLagoonId,
       },
       {
         name: "Aloo Tiki",
-        description:
-          "Potato croquette topped with pickled seasonal vegetables and an assortment of chutneys",
+        description: "Potato croquette topped with pickled seasonal vegetables and an assortment of chutneys",
         price: "$12.00",
         restaurant_id: lastTrainToDelhiId,
       },
@@ -716,8 +646,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Kofta Curry",
-        description:
-          "Indian kofta served with bottleneck gourds and potatoes in a cashew coconut sauce",
+        description: "Indian kofta served with bottleneck gourds and potatoes in a cashew coconut sauce",
         price: "$20.00",
         restaurant_id: lastTrainToDelhiId,
       },
@@ -735,8 +664,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "khumb korma",
-        description:
-          "Aged basmati rice, marinated lamb & puff pastry cover, garlic yogurt",
+        description: "Aged basmati rice, marinated lamb & puff pastry cover, garlic yogurt",
         price: "$36.00",
         restaurant_id: adrakYorkvilleId,
       },
@@ -748,15 +676,13 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "cocochoco rasmalai cheese cake",
-        description:
-          "Coconut crémeux, chocolate hazelnut crunch, coconut snow, citrus gel, cardamom ice cream",
+        description: "Coconut crémeux, chocolate hazelnut crunch, coconut snow, citrus gel, cardamom ice cream",
         price: "$19.00",
         restaurant_id: adrakYorkvilleId,
       },
       {
         name: "Molasses Braised Beef Cheeks Curry",
-        description:
-          "Caramelised root vegetables, deggi mirch, buttermilk onion rings",
+        description: "Caramelised root vegetables, deggi mirch, buttermilk onion rings",
         price: "$32.00",
         restaurant_id: curryishTavernId,
       },
@@ -768,8 +694,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Goan Chorizo + Braised Pork Shoulder Curry",
-        description:
-          "Double smoked bacon, roasted parsnips, red kidney beans, apple achar",
+        description: "Double smoked bacon, roasted parsnips, red kidney beans, apple achar",
         price: "$31.00",
         restaurant_id: curryishTavernId,
       },
@@ -793,36 +718,31 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Goan fish curry",
-        description:
-          "Filet of salmon cooked in a traditional hot and tangy coconut curry",
+        description: "Filet of salmon cooked in a traditional hot and tangy coconut curry",
         price: "$15.00",
         restaurant_id: utsavId,
       },
       {
         name: "Lamb vindaloo",
-        description:
-          "A delicacy from Goa - Boneless lamb cooked in a hot, spicy and tangy sauce with potatoes",
+        description: "A delicacy from Goa - Boneless lamb cooked in a hot, spicy and tangy sauce with potatoes",
         price: "$14.00",
         restaurant_id: utsavId,
       },
       {
         name: "Matar paneer",
-        description:
-          "Cottage cheese and green peas cooked in butter flavored onion and tomato gravy",
+        description: "Cottage cheese and green peas cooked in butter flavored onion and tomato gravy",
         price: "$10.00",
         restaurant_id: utsavId,
       },
       {
         name: "Chicken vindaloo",
-        description:
-          "Chicken cooked with herbs and spices in special hot spicy and tangy sauce with potatoes",
+        description: "Chicken cooked with herbs and spices in special hot spicy and tangy sauce with potatoes",
         price: "$14.00",
         restaurant_id: utsavId,
       },
       {
         name: "Chicken jalfrezi",
-        description:
-          "Chicken cooked with delicious mix of green peppers, onions, green chillies and tomatoes",
+        description: "Chicken cooked with delicious mix of green peppers, onions, green chillies and tomatoes",
         price: "$14.00",
         restaurant_id: utsavId,
       },
@@ -840,8 +760,7 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Short Ribs",
-        description:
-          "PEI beef braised with black cumin, cloves, cardamom and fennel seeds",
+        description: "PEI beef braised with black cumin, cloves, cardamom and fennel seeds",
         price: "$32.00",
         restaurant_id: pukkaId,
       },
@@ -853,29 +772,25 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Pukka Chaat",
-        description:
-          "string vegetables, sprouts, rice crisps, pomegranate, mango, green apple, chutneys and yoghurt",
+        description: "string vegetables, sprouts, rice crisps, pomegranate, mango, green apple, chutneys and yoghurt",
         price: "$16.00",
         restaurant_id: pukkaId,
       },
       {
         name: "Chicken Tikka",
-        description:
-          "herb-infused white meat, tandoor roasted and served with tamarind chutney",
+        description: "herb-infused white meat, tandoor roasted and served with tamarind chutney",
         price: "$21.00",
         restaurant_id: pukkaId,
       },
       {
         name: "Butter Chicken Poutine",
-        description:
-          "Fries are served topped with melting cheese and butter chicken gravy",
+        description: "Fries are served topped with melting cheese and butter chicken gravy",
         price: "$8.99",
         restaurant_id: kamasutraIndianId,
       },
       {
         name: "Vegetable Appy Platter",
-        description:
-          "2 Vegetable samosas, vegetable pakora, paneer pakora, 1 papadum, served with chickpea curry",
+        description: "2 Vegetable samosas, vegetable pakora, paneer pakora, 1 papadum, served with chickpea curry",
         price: "$13.99",
         restaurant_id: kamasutraIndianId,
       },
@@ -893,50 +808,43 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Colosseo Pizze",
-        description:
-          "Luciano's spicy Italian sausage, black olives, hot peppers, mozzarella and parmigiano cheeses",
+        description: "Luciano's spicy Italian sausage, black olives, hot peppers, mozzarella and parmigiano cheeses",
         price: "$22.00",
         restaurant_id: laBartolaId,
       },
       {
         name: "Vitello alla Griglia",
-        description:
-          "Grilled veal medallion, with seasonal vegetables and potatoes",
+        description: "Grilled veal medallion, with seasonal vegetables and potatoes",
         price: "$35.00",
         restaurant_id: laBartolaId,
       },
       {
         name: "Agnello",
-        description:
-          "Grilled lamb chops in a citrus marinade, with seasonal vegetables and potatoes",
+        description: "Grilled lamb chops in a citrus marinade, with seasonal vegetables and potatoes",
         price: "$35.00",
         restaurant_id: laBartolaId,
       },
       {
         name: "Orata ai Porri",
         description: "$32.00",
-        price:
-          "Pan seared sea bream filet with sautéed leeks, served over a wild rice medley and greens",
+        price: "Pan seared sea bream filet with sautéed leeks, served over a wild rice medley and greens",
         restaurant_id: laBartolaId,
       },
       {
         name: "Insalata di Mare",
-        description:
-          "Mixed greens tossed in our house viniagriette, topped with grilled shrimp and crab meat",
+        description: "Mixed greens tossed in our house viniagriette, topped with grilled shrimp and crab meat",
         price: "$25.00",
         restaurant_id: laBartolaId,
       },
       {
         name: "PASTOR",
-        description:
-          "Marinated shaved pork, pineapple, red onion dice, cilantro, salsa verde, corn tortilla",
+        description: "Marinated shaved pork, pineapple, red onion dice, cilantro, salsa verde, corn tortilla",
         price: "$23.00",
         restaurant_id: elCatrinId,
       },
       {
         name: "COCHINITA PIBIL",
-        description:
-          "Achiote rubbed pork, black bean puree, pickled red onion, cilantro, habanero salsa",
+        description: "Achiote rubbed pork, black bean puree, pickled red onion, cilantro, habanero salsa",
         price: "$23.00",
         restaurant_id: elCatrinId,
       },
@@ -948,71 +856,61 @@ export async function GET(req: NextRequest) {
       },
       {
         name: "Sirloin Steak & Tuetano Osso Buco",
-        description:
-          "Bone marrow, slow cooked in the oven, topped with our seasoning",
+        description: "Bone marrow, slow cooked in the oven, topped with our seasoning",
         price: "$26.00",
         restaurant_id: mariachisId,
       },
       {
         name: "Fajitas",
-        description:
-          "A sizzling bed of onions and bell peppers topped with your choice of protein",
+        description: "A sizzling bed of onions and bell peppers topped with your choice of protein",
         price: "$17.50",
         restaurant_id: mariachisId,
       },
       {
         name: "Hamachi",
-        description:
-          "Ponzu à la truffe, truffe noire râpée [Salmon Tataki, Truffle ponzu, Shaved black truffle]",
+        description: "Ponzu à la truffe, truffe noire râpée [Salmon Tataki, Truffle ponzu, Shaved black truffle]",
         price: "$24.00",
         restaurant_id: canoRestaurantId,
       },
       {
         name: "Tartare de Thon",
-        description:
-          "Soja Yuzu, piment serrano [Hot Hamachi, Yuzu soy, Serrano pepper]",
+        description: "Soja Yuzu, piment serrano [Hot Hamachi, Yuzu soy, Serrano pepper]",
         price: "$24.00",
         restaurant_id: canoRestaurantId,
       },
       {
         name: "Tataki de Saumon",
-        description:
-          "Purée d'avocat, chili soja [Tuna Tartar, Avocado puree, Chili soy]",
+        description: "Purée d'avocat, chili soja [Tuna Tartar, Avocado puree, Chili soy]",
         price: "$27.00",
         restaurant_id: canoRestaurantId,
       },
       {
         name: "Tomato Braised Beef Cheek Ragu",
-        description:
-          "Wild Mushrooms, Sweet Potato & Ricotta Gnocchi, Fresh Basil",
+        description: "Wild Mushrooms, Sweet Potato & Ricotta Gnocchi, Fresh Basil",
         price: "$29.00",
         restaurant_id: bluRistoranteId,
       },
       {
         name: "Roasted Butternut Squash Ravioli",
-        description:
-          "Gorgonzola, Balsamic Reduction, Brown Butter, Crispy Sage",
+        description: "Gorgonzola, Balsamic Reduction, Brown Butter, Crispy Sage",
         price: "$33.00",
         restaurant_id: bluRistoranteId,
       },
       {
         name: "Pan Seared Atlantic Salmon",
-        description:
-          "Heirloom Carrots, Green Beans, Parsnip Puree, Beluga Lentils & Barley, Chive Oil",
+        description: "Heirloom Carrots, Green Beans, Parsnip Puree, Beluga Lentils & Barley, Chive Oil",
         price: "$33.00",
         restaurant_id: bluRistoranteId,
       },
       {
         name: "Woodfire Grilled 12oz AAA Ribeye",
-        description:
-          "Heirloom Carrots, Green Beans, Sweet Potato Gratin, Mushroom Veal jus",
+        description: "Heirloom Carrots, Green Beans, Sweet Potato Gratin, Mushroom Veal jus",
         price: "$55.00",
         restaurant_id: bluRistoranteId,
       },
       {
         name: "Pizzoccheri di Teglio",
-        description:
-          "Homemade short buckwheat Pasta coated in three-cheese sauce, savoy cabbage, potatoes, butter and sage",
+        description: "Homemade short buckwheat Pasta coated in three-cheese sauce, savoy cabbage, potatoes, butter and sage",
         price: "$24.00",
         restaurant_id: stelvioId,
       },
@@ -1303,12 +1201,11 @@ export async function GET(req: NextRequest) {
     ],
   });
 
-  const tables: { restaurant_id: number; seats: number }[] = [];
+  const tables: {restaurant_id: number; seats: number}[] = [];
   restaurants.forEach((r) => {
     const seatCount = [2, 4, 6, 8];
     const tableCount = [3, 4, 5, 6, 7, 8];
-    let tablesAvailable =
-      tableCount[Math.floor(Math.random() * tableCount.length)];
+    let tablesAvailable = tableCount[Math.floor(Math.random() * tableCount.length)];
     while (tablesAvailable > 0) {
       tablesAvailable -= 1;
       tables.push({
@@ -1317,7 +1214,7 @@ export async function GET(req: NextRequest) {
       });
     }
   });
-  await prisma.table.createMany({ data: tables });
+  await prisma.table.createMany({data: tables});
 
-  return NextResponse.json({ name: "hello" });
+  return NextResponse.json({name: "hello"});
 }

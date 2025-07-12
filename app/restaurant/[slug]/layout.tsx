@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
+import React, {Suspense} from "react";
 import Header from "./components/Header";
-import { default as prismaClient } from "@/lib/prismaClient";
-import { Location } from "@prisma/client";
+import getPrismaClient from "@/lib/prismaClient";
+import {Location} from "@prisma/client";
 import Loading from "../loading";
-import { notFound } from "next/navigation";
+import {notFound} from "next/navigation";
 
 interface Restaurant {
   id: number;
@@ -12,8 +12,9 @@ interface Restaurant {
 }
 
 async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
+  const prismaClient = getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
-    where: { slug },
+    where: {slug},
     select: {
       id: true,
       name: true,
@@ -30,21 +31,16 @@ async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
 
 interface Props {
   children: React.ReactNode;
-  params: { slug: string };
+  params: {slug: string};
 }
 
-export default async function RestaurantLayout({ children, params }: Props) {
+export default async function RestaurantLayout({children, params}: Props) {
   const restaurant = await fetchRestaurantBySlug(params.slug);
 
   return (
     <Suspense fallback={<Loading />}>
-      <Header
-        name={restaurant.name}
-        location={restaurant.location.name}
-      />
-      <div className="flex m-auto w-2/3 justify-between items-start 0 -mt-11">
-        {children}
-      </div>
+      <Header name={restaurant.name} location={restaurant.location.name} />
+      <div className="flex m-auto w-2/3 justify-between items-start 0 -mt-11">{children}</div>
     </Suspense>
   );
 }

@@ -5,9 +5,9 @@ import Description from "./components/Description";
 import Images from "./components/Images";
 import Reviews from "./components/Reviews";
 import ReservationCard from "./components/ReservationCard";
-import { default as prismaClient } from "@/lib/prismaClient";
-import { Location, Review } from "@prisma/client";
-import { notFound } from "next/navigation";
+import getPrismaClient from "@/lib/prismaClient";
+import {Location, Review} from "@prisma/client";
+import {notFound} from "next/navigation";
 
 interface Restaurant {
   id: number;
@@ -21,8 +21,9 @@ interface Restaurant {
 }
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
+  const prismaClient = getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
-    where: { slug },
+    where: {slug},
     select: {
       name: true,
     },
@@ -36,8 +37,9 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
 }
 
 async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
-  const restaurant = await prismaClient.restaurant.findUnique({
-    where: { slug },
+  const prisma = getPrismaClient();
+  const restaurant = await prisma.restaurant.findUnique({
+    where: {slug},
     select: {
       id: true,
       name: true,
@@ -63,7 +65,7 @@ interface Props {
   };
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({params}: Props) {
   const name = await fetchRestaurantNameBySlug(params.slug);
 
   return {
@@ -71,7 +73,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function RestaurantDetails({ params }: Props) {
+export default async function RestaurantDetails({params}: Props) {
   const restaurant = await fetchRestaurantBySlug(params.slug);
 
   return (
@@ -84,11 +86,7 @@ export default async function RestaurantDetails({ params }: Props) {
         <Images images={restaurant.images} />
         <Reviews reviews={restaurant.reviews} />
       </div>
-      <ReservationCard
-        slug={params.slug}
-        openTime={restaurant.open_time}
-        closeTime={restaurant.close_time}
-      />
+      <ReservationCard slug={params.slug} openTime={restaurant.open_time} closeTime={restaurant.close_time} />
     </>
   );
 }

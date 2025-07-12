@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import validator from "validator";
-import prisma from "@/lib/prismaClient";
+import getPrismaClient from "@/lib/prismaClient";
 import bcrypt from "bcrypt";
-import { User, PLAN } from "@prisma/client";
+import {User, PLAN} from "@prisma/client";
 import * as jose from "jose";
 
 export async function POST(req: NextRequest) {
-  const { firstName, lastName, email, password, city, phone, plan, beta } =
-    await req.json();
+  const {firstName, lastName, email, password, city, phone, plan, beta} = await req.json();
   const errors: string[] = [];
 
   let betaParticipant = false;
@@ -20,6 +19,7 @@ export async function POST(req: NextRequest) {
     planActual = PLAN.PRO;
   }
 
+  const prisma = getPrismaClient();
   const adminCount = await prisma.user.count({
     where: {
       admin: true,
@@ -33,10 +33,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (userTest) {
-    return NextResponse.json(
-      { errorMessage: "E-mail currently already in use with another account." },
-      { status: 400 }
-    );
+    return NextResponse.json({errorMessage: "E-mail currently already in use with another account."}, {status: 400});
   }
 
   const validationSchema = [
@@ -84,7 +81,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (errors.length) {
-    return NextResponse.json({ errorMessage: errors[0] }, { status: 400 });
+    return NextResponse.json({errorMessage: errors[0]}, {status: 400});
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -105,10 +102,7 @@ export async function POST(req: NextRequest) {
 
   const alg = "HS256";
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-  const token = await new jose.SignJWT({ email: user.email })
-    .setProtectedHeader({ alg })
-    .setExpirationTime("24h")
-    .sign(secret);
+  const token = await new jose.SignJWT({email: user.email}).setProtectedHeader({alg}).setExpirationTime("24h").sign(secret);
 
   const res = NextResponse.json({
     admin: user.admin,

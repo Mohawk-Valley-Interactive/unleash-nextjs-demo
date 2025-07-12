@@ -1,14 +1,13 @@
-import { default as prismaClient } from "@/lib/prismaClient";
+import getPrismaClient from "@/lib/prismaClient";
 
 import Header from "./components/Header";
-import RestaurantCard, {
-  RestaurantCardType,
-} from "./components/RestaurantCard";
-import { Suspense } from "react";
+import RestaurantCard, {RestaurantCardType} from "./components/RestaurantCard";
+import {Suspense} from "react";
 import Loading from "./loading";
-import { cookies } from "next/headers";
+import {cookies} from "next/headers";
 
 async function fetchRestaurants(): Promise<RestaurantCardType[]> {
+  const prismaClient = getPrismaClient();
   const restaurants = await prismaClient.restaurant.findMany({
     select: {
       id: true,
@@ -29,7 +28,7 @@ export const metadata = {
   title: "RuntimeDining",
 };
 
-export default async function Home({ searchParams }: { searchParams: {} }) {
+export default async function Home({searchParams}: {searchParams: {}}) {
   const c = cookies(); // To bypass static
   const restaurants = await fetchRestaurants();
 
@@ -39,10 +38,7 @@ export default async function Home({ searchParams }: { searchParams: {} }) {
         <Header />
         <main className="py-3 px-36 mt-10 flex flex-wrap">
           {restaurants.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.id}
-              restaurant={restaurant}
-            />
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
           ))}
         </main>
       </div>

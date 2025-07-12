@@ -1,17 +1,17 @@
 import Header from "./components/Header";
 import SearchSideBar from "./components/SearchSideBar";
-import RestaurantCard, {
-  RestaurantCardType,
-} from "./components/RestaurantCard";
-import { default as prismaClient } from "@/lib/prismaClient";
-import { PRICE } from "@prisma/client";
-import { cookies } from "next/headers";
+import RestaurantCard, {RestaurantCardType} from "./components/RestaurantCard";
+import getPrismaClient from "@/lib/prismaClient";
+import {PRICE} from "@prisma/client";
+import {cookies} from "next/headers";
 
 async function fetchCuisines() {
+  const prismaClient = getPrismaClient();
   return prismaClient.cuisine.findMany();
 }
 
 async function fetchLocations() {
+  const prismaClient = getPrismaClient();
   return prismaClient.location.findMany();
 }
 
@@ -21,11 +21,7 @@ interface SearchParams {
   price?: PRICE;
 }
 
-async function fetchRestaurants({
-  cuisine,
-  city,
-  price,
-}: SearchParams): Promise<RestaurantCardType[]> {
+async function fetchRestaurants({cuisine, city, price}: SearchParams): Promise<RestaurantCardType[]> {
   const select = {
     id: true,
     slug: true,
@@ -61,6 +57,7 @@ async function fetchRestaurants({
     };
   }
 
+  const prismaClient = getPrismaClient();
   return prismaClient.restaurant.findMany({
     where,
     select,
@@ -79,7 +76,7 @@ interface Props {
   };
 }
 
-export default async function Search({ searchParams }: Props) {
+export default async function Search({searchParams}: Props) {
   const c = cookies(); // To bypass static
   const cuisines = await fetchCuisines();
   const locations = await fetchLocations();
@@ -89,21 +86,12 @@ export default async function Search({ searchParams }: Props) {
     <>
       <Header />
       <div className="flex py-4 m-auto w-2/3 justify-between items-start">
-        <SearchSideBar
-          cuisines={cuisines}
-          locations={locations}
-          searchParams={searchParams}
-        />
+        <SearchSideBar cuisines={cuisines} locations={locations} searchParams={searchParams} />
         <div className="w-5/6">
           {restaurantLocations.length <= 0 ? (
             <span>No restaurants found in {searchParams.city}</span>
           ) : (
-            restaurantLocations.map((restaurant) => (
-              <RestaurantCard
-                key={restaurant.id}
-                restaurant={restaurant}
-              />
-            ))
+            restaurantLocations.map((restaurant) => <RestaurantCard key={restaurant.id} restaurant={restaurant} />)
           )}
         </div>
       </div>

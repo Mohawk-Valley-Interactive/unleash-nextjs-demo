@@ -1,11 +1,11 @@
-import { times } from "@/data/index";
-import prisma from "@/lib/prismaClient";
-import { Table } from "@prisma/client";
+import {times} from "@/data/index";
+import getPrismaClient from "@/lib/prismaClient";
+import {Table} from "@prisma/client";
 
 interface Params {
   date: string;
   time: string;
-  restaurant: { tables: Table[] };
+  restaurant: {tables: Table[]};
 }
 
 interface AvailableTableData {
@@ -14,11 +14,7 @@ interface AvailableTableData {
   tables: Table[];
 }
 
-export default async function findAvailableTables({
-  date,
-  time,
-  restaurant,
-}: Params): Promise<AvailableTableData[] | null> {
+export default async function findAvailableTables({date, time, restaurant}: Params): Promise<AvailableTableData[] | null> {
   const searchTimes = times.find((t) => {
     return t.time === time;
   })?.searchTimes;
@@ -27,6 +23,7 @@ export default async function findAvailableTables({
     return null;
   }
 
+  const prisma = getPrismaClient();
   const bookings = await prisma.booking.findMany({
     where: {
       booking_time: {
@@ -42,7 +39,7 @@ export default async function findAvailableTables({
     },
   });
 
-  const bookingTablesObj: { [key: string]: { [key: number]: true } } = {};
+  const bookingTablesObj: {[key: string]: {[key: number]: true}} = {};
   bookings.forEach((b) => {
     const tableData = b.tables.reduce((obj, table) => {
       return {

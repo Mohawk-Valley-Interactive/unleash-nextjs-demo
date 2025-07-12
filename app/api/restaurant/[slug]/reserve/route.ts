@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
-import prisma from "@/lib/prismaClient";
+import getPrismaClient from "@/lib/prismaClient";
 import findAvailableTables from "@/services/restaurant/findAvailableTables";
 import validator from "validator";
-import { getFlagsClient } from "@/utils/getFlagsClient";
+import {getFlagsClient} from "@/utils/getFlagsClient";
 
 interface Params {
-  params: { slug: string };
+  params: {slug: string};
 }
 
-export async function POST(req: NextRequest, { params }: Params) {
+export async function POST(req: NextRequest, {params}: Params) {
   let flags = null;
   try {
     flags = await getFlagsClient(req);
@@ -22,41 +22,26 @@ export async function POST(req: NextRequest, { params }: Params) {
       }),
       {
         status: 500,
-        headers: { "content-type": "application/json" },
+        headers: {"content-type": "application/json"},
       }
     );
   }
 
   const isEnabled = flags.isEnabled("feature-reservation");
   if (!isEnabled) {
-    return NextResponse.json(
-      { errorMessage: "Endpoint unavailable." },
-      { status: 404 }
-    );
+    return NextResponse.json({errorMessage: "Endpoint unavailable."}, {status: 404});
   }
 
   const slug = params.slug;
-  const { searchParams } = new URL(req.url);
-  const { firstName, lastName, email, phone, occasion, request } =
-    await req.json();
+  const {searchParams} = new URL(req.url);
+  const {firstName, lastName, email, phone, occasion, request} = await req.json();
 
   const date = searchParams.get("date");
   const time = searchParams.get("time");
   const partySize = searchParams.get("partySize");
 
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !phone ||
-    !date ||
-    !time ||
-    !partySize
-  ) {
-    return NextResponse.json(
-      { errorMessage: "Required data missing." },
-      { status: 400 }
-    );
+  if (!firstName || !lastName || !email || !phone || !date || !time || !partySize) {
+    return NextResponse.json({errorMessage: "Required data missing."}, {status: 400});
   }
 
   const validationSchema = [
@@ -92,11 +77,12 @@ export async function POST(req: NextRequest, { params }: Params) {
   });
 
   if (errors.length) {
-    return NextResponse.json({ errorMessage: errors[0] }, { status: 400 });
+    return NextResponse.json({errorMessage: errors[0]}, {status: 400});
   }
 
+  const prisma = getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
-    where: { slug },
+    where: {slug},
     select: {
       id: true,
       open_time: true,
@@ -106,31 +92,19 @@ export async function POST(req: NextRequest, { params }: Params) {
   });
 
   if (!restaurant) {
-    return NextResponse.json(
-      { errorMessage: "Restaurant not found." },
-      { status: 400 }
-    );
+    return NextResponse.json({errorMessage: "Restaurant not found."}, {status: 400});
   }
 
   const reservationTime = new Date(`${date}T${time}`);
   const restaurantOpeningTime = new Date(`${date}T${restaurant.open_time}`);
   const restaurantClosingTime = new Date(`${date}T${restaurant.close_time}`);
-  if (
-    restaurantOpeningTime > reservationTime ||
-    restaurantClosingTime < reservationTime
-  ) {
-    return NextResponse.json(
-      { errorMessage: "Restaurant is not open at the requested time." },
-      { status: 400 }
-    );
+  if (restaurantOpeningTime > reservationTime || restaurantClosingTime < reservationTime) {
+    return NextResponse.json({errorMessage: "Restaurant is not open at the requested time."}, {status: 400});
   }
 
-  const availableTables = await findAvailableTables({ date, time, restaurant });
+  const availableTables = await findAvailableTables({date, time, restaurant});
   if (!availableTables) {
-    return NextResponse.json(
-      { errorMessage: "Unable to process request." },
-      { status: 400 }
-    );
+    return NextResponse.json({errorMessage: "Unable to process request."}, {status: 400});
   }
 
   const rtTime = reservationTime.getTime();
@@ -139,13 +113,10 @@ export async function POST(req: NextRequest, { params }: Params) {
   });
 
   if (!searchTimeWithTables) {
-    return NextResponse.json(
-      { errorMessage: "No available tables found at desired date/time." },
-      { status: 400 }
-    );
+    return NextResponse.json({errorMessage: "No available tables found at desired date/time."}, {status: 400});
   }
 
-  let tableAvailabilityBySize: { 2: number[]; 4: number[] } = {
+  let tableAvailabilityBySize: {2: number[]; 4: number[]} = {
     2: [],
     4: [],
   };
@@ -157,15 +128,10 @@ export async function POST(req: NextRequest, { params }: Params) {
     }
   });
 
-  const totalAvailableSeating =
-    tableAvailabilityBySize[4].length * 4 +
-    tableAvailabilityBySize[2].length * 2;
+  const totalAvailableSeating = tableAvailabilityBySize[4].length * 4 + tableAvailabilityBySize[2].length * 2;
   let requiredSeating = parseInt(partySize);
   if (requiredSeating > totalAvailableSeating) {
-    return NextResponse.json(
-      { errorMessage: "Not enough available seating." },
-      { status: 400 }
-    );
+    return NextResponse.json({errorMessage: "Not enough available seating."}, {status: 400});
   }
 
   const tablesToBook: number[] = [];
@@ -212,7 +178,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     };
   });
 
-  await prisma.bookingsOnTables.createMany({ data: bookingsOnTableData });
+  await prisma.bookingsOnTables.createMany({data: bookingsOnTableData});
 
   const debugData = {
     tablesToBook,

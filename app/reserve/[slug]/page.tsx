@@ -1,17 +1,18 @@
 import Header from "./components/Header";
 import Form from "./components/Form";
 
-import prisma from "@/lib/prismaClient";
-import { notFound } from "next/navigation";
-import { Restaurant, User } from "@prisma/client";
-import { cookies } from "next/headers";
-import { evaluateFlags, flagsClient, getDefinitions } from "@unleash/nextjs";
+import getPrismaClient from "@/lib/prismaClient";
+import {notFound} from "next/navigation";
+import {Restaurant, User} from "@prisma/client";
+import {cookies} from "next/headers";
+import {evaluateFlags, flagsClient, getDefinitions} from "@unleash/nextjs";
 import * as jose from "jose";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
+  const prisma = getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
-    where: { slug },
-    select: { name: true },
+    where: {slug},
+    select: {name: true},
   });
 
   if (!restaurant) {
@@ -22,8 +23,9 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
 }
 
 async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
+  const prisma = getPrismaClient();
   const restaurant = await prisma.restaurant.findUnique({
-    where: { slug },
+    where: {slug},
   });
 
   if (!restaurant) {
@@ -34,14 +36,14 @@ async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
 }
 
 interface Props {
-  params: { slug: string };
+  params: {slug: string};
   searchParams: {
     date: string;
     partySize: string;
   };
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({params}: Props) {
   const name = await fetchRestaurantNameBySlug(params.slug);
 
   return {
@@ -51,9 +53,7 @@ export async function generateMetadata({ params }: Props) {
 
 async function getFlag(flagName: string) {
   const cookieStore = cookies();
-  const sessionId =
-    cookieStore.get("unleash-session-id")?.value ||
-    `${Math.floor(Math.random() * 1_000_000_000)}`;
+  const sessionId = cookieStore.get("unleash-session-id")?.value || `${Math.floor(Math.random() * 1_000_000_000)}`;
 
   let beta: string = "";
   let city: string = "";
@@ -66,8 +66,9 @@ async function getFlag(flagName: string) {
   if (jwt) {
     const decodeJwt = jose.decodeJwt(jwt);
     email = decodeJwt.email as string;
+    const prisma = getPrismaClient();
     const user: User | null = await prisma.user.findUnique({
-      where: { email },
+      where: {email},
     });
     if (user) {
       beta = user.beta ? "true" : "false";
@@ -80,11 +81,11 @@ async function getFlag(flagName: string) {
 
   const definitions = await getDefinitions({
     fetchOptions: {
-      next: { revalidate: 15 }, // Cache layer like Unleash Proxy!
+      next: {revalidate: 15}, // Cache layer like Unleash Proxy!
     },
   });
 
-  const { toggles } = await evaluateFlags(definitions, {
+  const {toggles} = await evaluateFlags(definitions, {
     sessionId,
     beta,
     city,
@@ -98,7 +99,7 @@ async function getFlag(flagName: string) {
   return flags.isEnabled(flagName);
 }
 
-export default async function Reserve({ params, searchParams }: Props) {
+export default async function Reserve({params, searchParams}: Props) {
   const isEnabled = await getFlag("feature-reservation");
   if (!isEnabled) {
     return (
@@ -125,11 +126,7 @@ export default async function Reserve({ params, searchParams }: Props) {
           date={searchParams.date}
           partySize={searchParams.partySize}
         />
-        <Form
-          slug={params.slug}
-          date={searchParams.date}
-          partySize={searchParams.partySize}
-        />
+        <Form slug={params.slug} date={searchParams.date} partySize={searchParams.partySize} />
       </div>
     </div>
   );

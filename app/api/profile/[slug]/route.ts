@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prismaClient";
+import {NextRequest, NextResponse} from "next/server";
+import getPrismaClient from "@/lib/prismaClient";
 
 interface Params {
   params: {
@@ -7,13 +7,14 @@ interface Params {
   };
 }
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, {params}: Params) {
   // email acquired from token and injected via authentication middleware
   // let email: string = req.headers.get("email") as string;
   let email: string = req.headers.get("email") as string;
 
+  const prisma = getPrismaClient();
   const callingUser = await prisma.user.findUnique({
-    where: { email },
+    where: {email},
     select: {
       admin: true,
     },
@@ -22,14 +23,11 @@ export async function GET(req: NextRequest, { params }: Params) {
   const desiredUser: string = params.slug === "me" ? email : params.slug;
 
   if (!callingUser?.admin && desiredUser !== email) {
-    return NextResponse.json(
-      { errorMessage: "Unauthorized request." },
-      { status: 401 }
-    );
+    return NextResponse.json({errorMessage: "Unauthorized request."}, {status: 401});
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: desiredUser },
+    where: {email: desiredUser},
     select: {
       id: true,
       created_at: true,
@@ -45,20 +43,18 @@ export async function GET(req: NextRequest, { params }: Params) {
   });
 
   if (!user) {
-    return NextResponse.json(
-      { errorMessage: "User not found." },
-      { status: 404 }
-    );
+    return NextResponse.json({errorMessage: "User not found."}, {status: 404});
   }
 
-  return NextResponse.json({ ...user });
+  return NextResponse.json({...user});
 }
 
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(req: NextRequest, {params}: Params) {
   let email: string = req.headers.get("email") as string;
 
+  const prisma = getPrismaClient();
   const callingUser = await prisma.user.findUnique({
-    where: { email },
+    where: {email},
     select: {
       admin: true,
     },
@@ -66,31 +62,25 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
   const desiredUser: string = params.slug === "me" ? email : params.slug;
   if (!callingUser?.admin && desiredUser !== email) {
-    return NextResponse.json(
-      { errorMessage: "Unauthorized request." },
-      { status: 401 }
-    );
+    return NextResponse.json({errorMessage: "Unauthorized request."}, {status: 401});
   }
 
-  const { body } = await req.json();
+  const {body} = await req.json();
   delete body.id;
   delete body.email;
   delete body.created_at;
   delete body.updated_at;
 
   const user = await prisma.user.update({
-    where: { email: desiredUser },
+    where: {email: desiredUser},
     data: {
       ...body,
     },
   });
 
   if (!user) {
-    return NextResponse.json(
-      { errorMessage: "User not found." },
-      { status: 404 }
-    );
+    return NextResponse.json({errorMessage: "User not found."}, {status: 404});
   }
 
-  return NextResponse.json({ ...user });
+  return NextResponse.json({...user});
 }

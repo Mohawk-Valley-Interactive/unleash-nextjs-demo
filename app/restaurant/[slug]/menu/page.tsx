@@ -1,11 +1,12 @@
-import { default as prismaClient } from "@/lib/prismaClient";
+import getPrismaClient from "@/lib/prismaClient";
 import RestaurantNavBar from "../components/RestaurantNavBar";
 import Menu from "./components/Menu";
-import { Item } from "@prisma/client";
+import {Item} from "@prisma/client";
 
 async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
+  const prismaClient = getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
-    where: { slug },
+    where: {slug},
     select: {
       id: true,
       name: true,
@@ -20,6 +21,7 @@ async function fetchRestaurantNameBySlug(slug: string): Promise<string> {
 }
 
 async function fetchRestaurantMenuBySlug(slug: string): Promise<Item[]> {
+  const prismaClient = getPrismaClient();
   const restaurant = await prismaClient.restaurant.findUnique({
     where: {
       slug,
@@ -42,7 +44,7 @@ interface Props {
   };
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({params}: Props) {
   const name = await fetchRestaurantNameBySlug(params.slug);
 
   return {
@@ -50,18 +52,14 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function RestaurantMenu({ params }: Props) {
+export default async function RestaurantMenu({params}: Props) {
   const menuItems = await fetchRestaurantMenuBySlug(params.slug);
   return (
     <div className="bg-white w-[100%] rounded p-3 shadow">
       <RestaurantNavBar slug={params.slug} />
       {menuItems.length ? (
         menuItems.map((item) => (
-          <div
-            id={item.id.toString()}
-            key={item.id.toString()}
-            className="mb-2"
-          >
+          <div id={item.id.toString()} key={item.id.toString()} className="mb-2">
             <strong>
               {item.name} - {item.price}
             </strong>
